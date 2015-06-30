@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleImage.Scales
 {
@@ -11,7 +7,7 @@ namespace ConsoleImage.Scales
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.GetEncoding(1252);
-            
+
             for (int i = 0; i < 13; i++)
             {
                 ConsolePixel p = GetGreyscalePixel(i);
@@ -59,16 +55,27 @@ namespace ConsoleImage.Scales
             {
                 PrintColorBlend(MakeDark(colors[i]), MakeDark(colors[(i + 1) % colors.Length]));
             }
-            
+
 
             for (int i = 0; i < 13; i++)
             {
                 for (int j = 0; j <= colors.Length; j++)
                 {
-                    Console.SetCursorPosition(j * 4 , i + 8);
+                    Console.SetCursorPosition(j * 4, i + 8);
                     ConsolePixel p = GetPureColorPixel(colors[j % colors.Length], 12 - i);
                     p.Print();
-                }        
+                }
+            }
+
+            Console.WriteLine();
+
+            for (int i = 0; i < 13; i++)
+            {
+                ConsolePixel p = GetPureColorPixel(ConsoleColor.Red, i);
+                p.Print();
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.WriteLine(" ({0},{1},{2})", p.Red, p.Green, p.Blue);
             }
 
 
