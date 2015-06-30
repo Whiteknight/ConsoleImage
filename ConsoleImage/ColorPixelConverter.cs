@@ -29,7 +29,7 @@ namespace ConsoleImage
             int bFgComp = (bBright < 2 ? 0 : 1) | (bBright >= 5 ? 8 : 0);
 
             ConsoleColor fgColor = (ConsoleColor)(rFgComp | gFgComp | gFgComp);
-            char ch = '\xB1';
+            char ch = ' ';
 
             return new ConsolePixel(bgColor, fgColor, ch);
         }

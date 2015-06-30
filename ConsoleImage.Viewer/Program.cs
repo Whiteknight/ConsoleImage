@@ -5,8 +5,7 @@ namespace ConsoleImage.Viewer
 {
     class Program
     {
-        private const string ImageFile = @"C:\Users\awhitworth\Pictures\Cute-Cats-063.jpg";
-        //private const string ImageFile = @"C:\Users\awhitworth\Pictures\blena.bmp";
+        private const string ImageFile = @"";
 
         static void Main(string[] args)
         {

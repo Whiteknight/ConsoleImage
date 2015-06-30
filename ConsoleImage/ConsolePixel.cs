@@ -24,14 +24,14 @@ namespace ConsoleImage
             { ConsoleColor.Yellow, new int[] { 255, 255, 0 }}
         };
 
-        private static readonly Dictionary<char, int> _percents = new Dictionary<char, int> {
+        private static readonly Dictionary<char, byte> _percents = new Dictionary<char, byte> {
             { ' ', 100 },
             { '\xB0', 75 },
             { '\xB1', 50 },
             { '\xB2', 25 }
         };
 
-        private int _percent;
+        private byte _percent;
 
         public ConsolePixel(ConsoleColor backgroundColor, ConsoleColor foregroundColor, char printableCharacter)
         {
@@ -39,7 +39,7 @@ namespace ConsoleImage
             ForegroundColor = foregroundColor;
             PrintableCharacter = printableCharacter;
 
-            _percent = _percents.ContainsKey(printableCharacter) ? _percents[printableCharacter] : 0;
+            _percent = _percents.ContainsKey(printableCharacter) ? _percents[printableCharacter] : (byte)0;
 
             int[] color1 = s_colorLookup[backgroundColor];
             int[] color2 = s_colorLookup[foregroundColor];
@@ -84,6 +84,11 @@ namespace ConsoleImage
         public int Rgb
         {
             get { return (Red << 8) | (Green << 4) | Blue; }
+        }
+
+        public int AsInt
+        {
+            get { return (((byte) PrintableCharacter) << 8) | ((byte) BackgroundColor << 4) | ((byte) ForegroundColor); }
         }
 
         public bool IsGrayscale
