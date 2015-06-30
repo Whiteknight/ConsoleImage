@@ -5,7 +5,7 @@ namespace ConsoleImage.Viewer
 {
     class Program
     {
-        private const string ImageFile = @"";
+        private const string ImageFile = @"C:\Users\awhitworth\Pictures\lena.jpg";
 
         static void Main(string[] args)
         {
@@ -30,6 +30,20 @@ namespace ConsoleImage.Viewer
             Console.WriteLine();
 
             converter = new BlockColorPixelConverterB();
+
+            for (int i = 0; i < Console.WindowHeight; i++)
+            {
+                for (int j = 0; j < Console.WindowWidth; j++)
+                {
+
+                    Color c = bmp.GetPixel(j, i);
+                    ConsolePixel pixel = converter.CreatePixel(c);
+                    pixel.Print();
+                }
+            }
+            Console.WriteLine();
+
+            converter = new InvertBlockColorPixelConverterB();
 
             for (int i = 0; i < Console.WindowHeight; i++)
             {

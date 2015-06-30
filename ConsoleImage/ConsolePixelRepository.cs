@@ -148,6 +148,11 @@ namespace ConsoleImage
             return pixel;
         }
 
+        public ConsolePixel GetFurthestPixel(Color c)
+        {
+            return _pixels.OrderByDescending(p => GetDistance(c, p)).First();
+        }
+
         public IEnumerable<ConsolePixel> RelatedColors(ConsoleColor cc)
         {
             ConsoleColor c1 = MakeBright(cc);

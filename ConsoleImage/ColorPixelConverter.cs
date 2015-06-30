@@ -49,4 +49,19 @@ namespace ConsoleImage
             return _repository.GetClosestPixel(c);
         }
     }
+
+    public class InvertBlockColorPixelConverterB : IColorPixelConverter
+    {
+        private readonly ConsolePixelRepository _repository;
+
+        public InvertBlockColorPixelConverterB()
+        {
+            _repository = new ConsolePixelRepository();
+        }
+
+        public ConsolePixel CreatePixel(Color c)
+        {
+            return _repository.GetClosestPixel(c).Invert();
+        }
+    }
 }

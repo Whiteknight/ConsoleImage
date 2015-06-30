@@ -73,6 +73,11 @@ namespace ConsoleImage
             Console.Write(PrintableCharacter);
         }
 
+        public ConsolePixel Invert()
+        {
+            return new ConsolePixel(InvertColor(BackgroundColor), InvertColor(ForegroundColor), PrintableCharacter);
+        }
+
         public byte Brightness
         {
             get { return (byte)(((int) Red + (int) Blue + (int) Green)/3); } 
@@ -99,6 +104,11 @@ namespace ConsoleImage
         private static bool IsColorGrayscale(ConsoleColor cc)
         {
             return cc == ConsoleColor.Black || cc == ConsoleColor.Gray || cc == ConsoleColor.DarkGray || cc == ConsoleColor.White;
+        }
+
+        private static ConsoleColor InvertColor(ConsoleColor cc)
+        {
+            return (ConsoleColor) (~((byte) cc) & 0x0F);
         }
     }
 } 
