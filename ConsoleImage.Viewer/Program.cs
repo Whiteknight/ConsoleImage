@@ -5,7 +5,7 @@ namespace ConsoleImage.Viewer
 {
     class Program
     {
-        private const string ImageFile = @"C:\Users\awhitworth\Pictures\lena.jpg";
+        private const string ImageFile = @"C:\Users\awhitworth\Pictures\Cute-Cats-063.jpg";
 
         static void Main(string[] args)
         {
@@ -14,6 +14,7 @@ namespace ConsoleImage.Viewer
             Console.WindowHeight = (int)((Console.WindowWidth - 1) * ratio);
             Console.OutputEncoding = System.Text.Encoding.GetEncoding(1252);
             Bitmap bmp = new Bitmap(original, new Size(Console.WindowWidth, Console.WindowHeight));
+            //bmp.Save(@"C:\Users\awhitworth\Pictures\Cute-Cats-063-resize.jpg");
 
             IColorPixelConverter converter = new BlockColorPixelConverterA();
 

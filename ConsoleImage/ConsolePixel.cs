@@ -5,25 +5,33 @@ namespace ConsoleImage
 {
     public class ConsolePixel
     {
-        private static readonly Dictionary<ConsoleColor, int[]> s_colorLookup = new Dictionary<ConsoleColor, int[]> {
-            { ConsoleColor.Black, new int[] { 0, 0, 0 }},
-            { ConsoleColor.Blue, new int[] { 0, 0, 255 }},
-            { ConsoleColor.Cyan, new int[] { 0, 255, 255 }},
-            { ConsoleColor.DarkBlue, new int[] { 0, 0, 128 }},
-            { ConsoleColor.DarkCyan, new int[] { 0, 128, 128 }},
-            { ConsoleColor.DarkGray, new int[] { 96, 96, 96 }},
-            { ConsoleColor.DarkGreen, new int[] { 0, 128, 0 }},
-            { ConsoleColor.DarkMagenta, new int[] { 128, 0, 128 }},
-            { ConsoleColor.DarkRed, new int[] { 128, 0, 0 }},
-            { ConsoleColor.DarkYellow, new int[] {128, 128, 0 }},
-            { ConsoleColor.Gray, new int[] { 194, 194, 194 }},
-            { ConsoleColor.Green, new int[] { 0, 255, 0 }},
-            { ConsoleColor.Magenta, new int[] { 255, 0, 255 }},
-            { ConsoleColor.Red, new int[] { 255, 0, 0 }},
-            { ConsoleColor.White, new int[] { 255, 255, 255 }},
-            { ConsoleColor.Yellow, new int[] { 255, 255, 0 }}
+        private const int L = 255;
+        private const int D = 128;
+        private const int BL = 0;
+        private const int BD = 64;
+        private const int G1 = 96;
+        private const int G2 = 194;
+
+        private static readonly Dictionary<ConsoleColor, int[]> _colorLookup = new Dictionary<ConsoleColor, int[]> {
+            { ConsoleColor.Black, new int[] { BL, BL, BL }},
+            { ConsoleColor.Blue, new int[] { BL, BL, L }},
+            { ConsoleColor.Cyan, new int[] { BL, L, L }},
+            { ConsoleColor.DarkBlue, new int[] { BD, BD, D }},
+            { ConsoleColor.DarkCyan, new int[] { BD, D, D }},
+            { ConsoleColor.DarkGray, new int[] { G1, G1, G1 }},
+            { ConsoleColor.DarkGreen, new int[] { BD, D, BD }},
+            { ConsoleColor.DarkMagenta, new int[] { D, BD, D }},
+            { ConsoleColor.DarkRed, new int[] { D, BD, BD }},
+            { ConsoleColor.DarkYellow, new int[] {D, D, BD }},
+            { ConsoleColor.Gray, new int[] { G2, G2, G2 }},
+            { ConsoleColor.Green, new int[] { BL, L, BL }},
+            { ConsoleColor.Magenta, new int[] { L, BL, L }},
+            { ConsoleColor.Red, new int[] { L, BL, BL }},
+            { ConsoleColor.White, new int[] { L, L, L }},
+            { ConsoleColor.Yellow, new int[] { L, L, BL }}
         };
 
+        // percentage of the background color which shows with each glyph
         private static readonly Dictionary<char, byte> _percents = new Dictionary<char, byte> {
             { ' ', 100 },
             { '\xB0', 75 },
@@ -31,7 +39,7 @@ namespace ConsoleImage
             { '\xB2', 25 }
         };
 
-        private byte _percent;
+        private readonly byte _percent;
 
         public ConsolePixel(ConsoleColor backgroundColor, ConsoleColor foregroundColor, char printableCharacter)
         {
@@ -41,8 +49,8 @@ namespace ConsoleImage
 
             _percent = _percents.ContainsKey(printableCharacter) ? _percents[printableCharacter] : (byte)0;
 
-            int[] color1 = s_colorLookup[backgroundColor];
-            int[] color2 = s_colorLookup[foregroundColor];
+            int[] color1 = _colorLookup[backgroundColor];
+            int[] color2 = _colorLookup[foregroundColor];
 
             Red = CalculateColor(color1[0], color2[0], _percent);
             Green = CalculateColor(color1[1], color2[1], _percent);

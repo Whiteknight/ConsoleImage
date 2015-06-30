@@ -83,14 +83,16 @@ namespace ConsoleImage.Scales
 
             Console.WriteLine();
 
-            ConsolePixel pixel = new ConsolePixelRepository().GetClosestPixel(Color.FromArgb(75, 102, 21));
-            pixel.Print();
-            pixel.Print();
-            pixel.Print();
+            ConsolePixelRepository repo = new ConsolePixelRepository();
+            //repo.GetClosestPixel(Color.FromArgb(75, 102, 21)).Print();
+            //Console.WriteLine();
+            //new ConsolePixelRepository().GetClosestPixel(Color.FromArgb(71, 103, 29)).Print();
+            //Console.WriteLine();
+            ConsolePixel p1 = repo.GetClosestPixel(Color.FromArgb(34,37,45));
+            p1.Print();
             Console.WriteLine();
-            pixel.Print();
-            pixel.Print();
-            pixel.Print();
+            new ConsolePixelRepository().GetClosestPixel(Color.FromArgb(85, 112, 31)).Print();
+            Console.WriteLine();
 
 
 

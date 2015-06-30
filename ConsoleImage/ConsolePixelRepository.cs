@@ -16,7 +16,7 @@ namespace ConsoleImage
             for (int i = 0; i < 13; i++)
             {
                 ConsolePixel p = GetGreyscalePixel(i);
-                pixels.Add(p.Rgb, p);
+                pixels.Add(p.AsInt, p);
             }
 
             ConsoleColor[] colors = {
@@ -34,46 +34,64 @@ namespace ConsoleImage
                 for (int j = 1; j < 12; j++)
                 {
                     ConsolePixel p = GetPureColorPixel(colors[i], j);
-                    if (!pixels.ContainsKey(p.Rgb))
-                        pixels.Add(p.Rgb, p);
+                    if (!pixels.ContainsKey(p.AsInt))
+                        pixels.Add(p.AsInt, p);
                 }
 
                 // Get direct pure-color blends
                 for (int j = 0; j < 4; j++)
                 {
                     ConsolePixel p = GetBlendColorPixel(colors[i], colors[(i + 1) % colors.Length], j);
-                    if (!pixels.ContainsKey(p.Rgb))
-                        pixels.Add(p.Rgb, p);
+                    if (!pixels.ContainsKey(p.AsInt))
+                        pixels.Add(p.AsInt, p);
 
                     p = GetBlendColorPixel(MakeDark(colors[i]), MakeDark(colors[(i + 1) % colors.Length]), j);
-                    if (!pixels.ContainsKey(p.Rgb))
-                        pixels.Add(p.Rgb, p);
+                    if (!pixels.ContainsKey(p.AsInt))
+                        pixels.Add(p.AsInt, p);
                 }
 
                 // Get diagonal bright-dark color blends
                 for (int j = 0; j < 4; j++)
                 {
                     ConsolePixel p = GetBlendColorPixel(colors[i], MakeDark(colors[(i + 1) % colors.Length]), j);
-                    if (!pixels.ContainsKey(p.Rgb))
-                        pixels.Add(p.Rgb, p);
+                    if (!pixels.ContainsKey(p.AsInt))
+                        pixels.Add(p.AsInt, p);
 
                     p = GetBlendColorPixel(colors[i], MakeDark(colors[(i + colors.Length - 1) % colors.Length]), j);
-                    if (!pixels.ContainsKey(p.Rgb))
-                        pixels.Add(p.Rgb, p);
+                    if (!pixels.ContainsKey(p.AsInt))
+                        pixels.Add(p.AsInt, p);
                 }
 
                 // Get Gray-Blends
                 for (int j = 0; j < 4; j++)
                 {
                     ConsolePixel p = GetBlendColorPixel(colors[i], ConsoleColor.Gray, j);
-                    if (!pixels.ContainsKey(p.Rgb))
-                        pixels.Add(p.Rgb, p);
+                    if (!pixels.ContainsKey(p.AsInt))
+                        pixels.Add(p.AsInt, p);
 
                     p = GetBlendColorPixel(MakeDark(colors[i]), ConsoleColor.DarkGray, j);
-                    if (!pixels.ContainsKey(p.Rgb))
-                        pixels.Add(p.Rgb, p);
+                    if (!pixels.ContainsKey(p.AsInt))
+                        pixels.Add(p.AsInt, p);
                 }
             }
+
+            // Add in some special non-adjacent blends where appropriate
+            for (int j = 0; j < 4; j++)
+            {
+                ConsolePixel p = GetBlendColorPixel(ConsoleColor.Green, ConsoleColor.Blue, j);
+                if (!pixels.ContainsKey(p.AsInt))
+                    pixels.Add(p.AsInt, p);
+
+                p = GetBlendColorPixel(ConsoleColor.DarkGreen, ConsoleColor.DarkBlue, j);
+                if (!pixels.ContainsKey(p.AsInt))
+                    pixels.Add(p.AsInt, p);
+            }
+
+            // Add some "brown" shades
+            ConsolePixel brown = GetBlendColorPixel(ConsoleColor.Red, ConsoleColor.Green, 2);
+            pixels.Add(brown.AsInt, brown);
+            brown = GetBlendColorPixel(ConsoleColor.DarkRed, ConsoleColor.DarkGreen, 2);
+            pixels.Add(brown.AsInt, brown);
 
             _pixels = pixels.Values.ToList();
         }
@@ -139,9 +157,9 @@ namespace ConsoleImage
             {
                 Pixel = p,
                 Distance = GetDistance(c, p)
-            }).OrderBy(x => x.Distance).Take(5).ToList();
+            }).OrderBy(x => x.Distance).Take(10).ToList();
             ConsolePixel pixel = pixels.First().Pixel;
-            if (pixel.IsGrayscale)
+            if (pixel.BackgroundColor == ConsoleColor.DarkRed)
             {
                 
             }
