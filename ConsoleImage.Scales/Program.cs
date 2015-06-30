@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 namespace ConsoleImage.Scales
 {
@@ -77,6 +80,17 @@ namespace ConsoleImage.Scales
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.WriteLine(" ({0},{1},{2})", p.Red, p.Green, p.Blue);
             }
+
+            Console.WriteLine();
+
+            ConsolePixel pixel = new ConsolePixelRepository().GetClosestPixel(Color.FromArgb(75, 102, 21));
+            pixel.Print();
+            pixel.Print();
+            pixel.Print();
+            Console.WriteLine();
+            pixel.Print();
+            pixel.Print();
+            pixel.Print();
 
 
 

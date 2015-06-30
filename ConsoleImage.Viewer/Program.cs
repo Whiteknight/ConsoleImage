@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Drawing;
-using System.Net.Mime;
 
 namespace ConsoleImage.Viewer
 {
     class Program
     {
-        private const string ImageFile = @"";
+        private const string ImageFile = @"C:\Users\awhitworth\Pictures\Cute-Cats-063.jpg";
+        //private const string ImageFile = @"C:\Users\awhitworth\Pictures\blena.bmp";
 
         static void Main(string[] args)
         {
@@ -45,15 +45,6 @@ namespace ConsoleImage.Viewer
 
             Console.ReadKey();
         }
-
-        //
-        private static string charsPercent = " .o*O0@";
-        private static char GetCharToWrite(Color color)
-        {
-            int i = (int)(((double)(color.R + color.G + color.B) / (double)(256 * 3)) * charsPercent.Length);
-            return charsPercent[i];
-        }
-
 
     }
 }
