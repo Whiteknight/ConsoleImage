@@ -41,7 +41,22 @@ namespace ConsoleImage
 
         public BlockColorPixelConverterB()
         {
-            _repository = new ConsolePixelRepository();
+            _repository = new ConsolePixelRepository(false);
+        }
+
+        public ConsolePixel CreatePixel(Color c)
+        {
+            return _repository.GetClosestPixel(c);
+        }
+    }
+
+    public class GreyscaleColorPixelConverterB : IColorPixelConverter
+    {
+        private readonly ConsolePixelRepository _repository;
+
+        public GreyscaleColorPixelConverterB()
+        {
+            _repository = new ConsolePixelRepository(true);
         }
 
         public ConsolePixel CreatePixel(Color c)

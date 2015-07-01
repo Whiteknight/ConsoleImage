@@ -8,7 +8,7 @@ namespace ConsoleImage
     public class ConsolePixelRepository
     {
         private readonly IReadOnlyList<ConsolePixel> _pixels; 
-        public ConsolePixelRepository()
+        public ConsolePixelRepository(bool isGreyscale = false)
         {
             Dictionary<int, ConsolePixel> pixels = new Dictionary<int, ConsolePixel>();
 
@@ -17,6 +17,12 @@ namespace ConsoleImage
             {
                 ConsolePixel p = GetGreyscalePixel(i);
                 pixels.Add(p.AsInt, p);
+            }
+
+            if (isGreyscale)
+            {
+                _pixels = pixels.Values.ToList();
+                return;
             }
 
             ConsoleColor[] colors = {
