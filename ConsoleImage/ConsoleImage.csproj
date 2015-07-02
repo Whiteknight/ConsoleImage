@@ -47,6 +47,7 @@
     <Compile Include="ConsoleState.cs" />
     <Compile Include="ImageBuffer.cs" />
     <Compile Include="ImageBuilder.cs" />
+    <Compile Include="ImageRenderer.cs" />
     <Compile Include="ImageSettings.cs" />
     <Compile Include="ImageResizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

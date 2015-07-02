@@ -3,6 +3,7 @@ using System.Drawing;
 
 namespace ConsoleImage
 {
+    // TODO: Bounds checking, etc
     public class ImageBuffer
     {
         private readonly int m_width;
@@ -28,34 +29,10 @@ namespace ConsoleImage
             m_buffer[top, left] = pixel;
         }
 
-        public void Draw(ImageSettings settings)
+        public ConsolePixel GetPixel(int left, int top)
         {
-            ResizeConsoleWindow(settings);
-
-            for (int i = settings.ImageTop; i < settings.ImageHeight + settings.ImageTop; i++)
-            {
-                Console.SetCursorPosition(settings.ConsoleLeft, settings.ConsoleTop + i - settings.ImageTop);
-                for (int j = settings.ImageLeft; j < settings.ImageWidth + settings.ImageLeft; j++)
-                {
-                    ConsolePixel p = m_buffer[i, j];
-                    p.Print();
-                }
-            }
+            return m_buffer[top, left];
         }
 
-        private static void ResizeConsoleWindow(ImageSettings settings)
-        {
-            int minConsoleHeight = settings.ImageHeight + settings.ConsoleTop;
-            if (minConsoleHeight > settings.ConsoleMaxHeight)
-                minConsoleHeight = settings.ConsoleMaxHeight;
-            if (Console.WindowHeight < minConsoleHeight)
-                Console.WindowHeight = minConsoleHeight;
-
-            int minConsoleWidth = settings.ImageWidth + settings.ConsoleLeft;
-            if (minConsoleWidth > settings.ConsoleMaxWidth)
-                minConsoleWidth = settings.ConsoleMaxWidth;
-            if (Console.WindowWidth < minConsoleWidth)
-                Console.WindowWidth = minConsoleWidth;
-        }
     }
 }

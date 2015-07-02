@@ -4,9 +4,8 @@ namespace ConsoleImage
 {
     public class ImageBuilder
     {
-        public ImageBuffer Build(ImageSettings settings, Bitmap bmp)
+        public ImageBuffer Build(IColorPixelConverter converter, Bitmap bmp)
         {
-            IColorPixelConverter converter = settings.ColorConverter ?? new BlockColorPixelConverterB();
             ImageBuffer buffer = new ImageBuffer(bmp.Size);
             for (int i = 0; i < bmp.Size.Height; i++)
             {

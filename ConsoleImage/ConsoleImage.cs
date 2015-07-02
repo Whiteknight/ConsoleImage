@@ -16,9 +16,10 @@ namespace ConsoleImage
             ConsoleState state = ConsoleState.GetState();
             Console.OutputEncoding = Encoding.GetEncoding(1252);
 
-            Bitmap bmp = new ImageResizer().Resize(image, settings);   
-            ImageBuffer buffer = new ImageBuilder().Build(settings, bmp);
-            buffer.Draw(settings);
+            Bitmap bmp = new ImageResizer().Resize(image, settings);
+            IColorPixelConverter converter = settings.ColorConverter ?? new BlockColorPixelConverterB();
+            ImageBuffer buffer = new ImageBuilder().Build(converter, bmp);
+            new ImageRenderer().Draw(settings, buffer);
 
             state.ResetConsole();
         }
