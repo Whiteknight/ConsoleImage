@@ -41,8 +41,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColorPixelConverter.cs" />
+    <Compile Include="ConsoleImage.cs" />
     <Compile Include="ConsolePixel.cs" />
     <Compile Include="ConsolePixelRepository.cs" />
+    <Compile Include="ConsoleState.cs" />
+    <Compile Include="ImageBuffer.cs" />
+    <Compile Include="ImageBuilder.cs" />
+    <Compile Include="ImageSettings.cs" />
+    <Compile Include="ImageResizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
