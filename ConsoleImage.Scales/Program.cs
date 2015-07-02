@@ -83,7 +83,10 @@ namespace ConsoleImage.Scales
 
             Console.WriteLine();
 
-            ConsolePixelRepository repo = new ConsolePixelRepository();
+            ConsolePixelRepository repo = new ConsolePixelRepository(new List<IPixelSource> {
+                new GrayscalePixelSource(),
+                new ColorsPixelSource()
+            });
             //repo.GetClosestPixel(Color.FromArgb(75, 102, 21)).Print();
             //Console.WriteLine();
             //new ConsolePixelRepository().GetClosestPixel(Color.FromArgb(71, 103, 29)).Print();
@@ -91,7 +94,7 @@ namespace ConsoleImage.Scales
             ConsolePixel p1 = repo.GetClosestPixel(Color.FromArgb(34,37,45));
             p1.Print();
             Console.WriteLine();
-            new ConsolePixelRepository().GetClosestPixel(Color.FromArgb(85, 112, 31)).Print();
+            repo.GetClosestPixel(Color.FromArgb(85, 112, 31)).Print();
             Console.WriteLine();
 
 

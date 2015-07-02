@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace ConsoleImage
@@ -8,10 +9,8 @@ namespace ConsoleImage
         ConsolePixel CreatePixel(Color c);
     }
 
-    public class BlockColorPixelConverterA : IColorPixelConverter
+    public class SimpleColorPixelConverterA : IColorPixelConverter
     {
-        private static string charsPercent = " \xB0\xB1\xB2\xB2\xB1\xB0 ";
-
         public ConsolePixel CreatePixel(Color c)
         {
             int rBright = c.R / 43;
@@ -35,13 +34,16 @@ namespace ConsoleImage
         }
     }
 
-    public class BlockColorPixelConverterB : IColorPixelConverter
+    public class SearchColorPixelConverter : IColorPixelConverter
     {
         private readonly ConsolePixelRepository _repository;
 
-        public BlockColorPixelConverterB()
+        public SearchColorPixelConverter()
         {
-            _repository = new ConsolePixelRepository(false);
+            _repository = new ConsolePixelRepository(new List<IPixelSource> {
+                new GrayscalePixelSource(),
+                new ColorsPixelSource()
+            });
         }
 
         public ConsolePixel CreatePixel(Color c)
@@ -56,7 +58,10 @@ namespace ConsoleImage
 
         public GreyscaleColorPixelConverterB()
         {
-            _repository = new ConsolePixelRepository(true);
+            _repository = new ConsolePixelRepository(new List<IPixelSource> {
+                new GrayscalePixelSource(),
+                new ColorsPixelSource()
+            });
         }
 
         public ConsolePixel CreatePixel(Color c)
@@ -71,7 +76,10 @@ namespace ConsoleImage
 
         public InvertBlockColorPixelConverterB()
         {
-            _repository = new ConsolePixelRepository();
+            _repository = new ConsolePixelRepository(new List<IPixelSource> {
+                new GrayscalePixelSource(),
+                new ColorsPixelSource()
+            });
         }
 
         public ConsolePixel CreatePixel(Color c)

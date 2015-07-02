@@ -17,7 +17,7 @@ namespace ConsoleImage
             Console.OutputEncoding = Encoding.GetEncoding(1252);
 
             Bitmap bmp = new ImageResizer().Resize(image, settings);
-            IColorPixelConverter converter = settings.ColorConverter ?? new BlockColorPixelConverterB();
+            IColorPixelConverter converter = settings.ColorConverter ?? new SearchColorPixelConverter();
             ImageBuffer buffer = new ImageBuilder().Build(converter, bmp);
             new ImageRenderer().Draw(settings, buffer);
 
