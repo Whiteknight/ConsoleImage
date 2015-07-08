@@ -8,9 +8,6 @@ namespace ConsoleImage
 {
     public class Image
     {
-        /* TODO: Refactor this. Move ImageBuilder to be a dependency of this class. Build frames lazily, on demand. Do
-         * not build the entire Image at once. */
-
         private readonly ImageBufferSet _buffers;
         private int _currentBuffer;
 

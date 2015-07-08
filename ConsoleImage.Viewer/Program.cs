@@ -10,6 +10,7 @@ namespace ConsoleImage.Viewer
         static void Main(string[] args)
         {
             // TODO: Need support for transparency, default background color
+            // TODO: Fix/Test resizing and cropping
 
             ImageSettings settings = new ImageSettings {
                 //ImageLeft = 50,
