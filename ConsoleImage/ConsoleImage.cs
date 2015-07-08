@@ -17,7 +17,7 @@ namespace ConsoleImage
             ConsoleState state = ConsoleState.GetState();
             Console.OutputEncoding = Encoding.GetEncoding(1252);
 
-            Image image = new ImageBuilder(settings.Sampler, settings.Converter, settings).Build(bitmap);
+            Image image = new Image(bitmap, settings);
             new ImageRenderer(settings).Draw(image);
 
             state.ResetConsole();
@@ -33,7 +33,7 @@ namespace ConsoleImage
             ConsoleState state = ConsoleState.GetState();
             Console.OutputEncoding = Encoding.GetEncoding(1252);
 
-            Image image = new ImageBuilder(settings.Sampler, settings.Converter, settings).Build(bitmap);
+            Image image = new Image(bitmap, settings);
 
             ImageRenderer renderer = new ImageRenderer(settings);
 
