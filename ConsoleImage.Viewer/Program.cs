@@ -5,7 +5,7 @@ namespace ConsoleImage.Viewer
 {
     class Program
     {
-        private const string ImageFile = @"";
+        private const string ImageFile = @"C:\Users\awhitworth\Pictures\1.gif";
 
         static void Main(string[] args)
         {
@@ -20,11 +20,11 @@ namespace ConsoleImage.Viewer
                 //ConsoleTop = 3,
                 //ConsoleMaxHeight = 25,
                 //ConsoleMaxWidth = 40
-                ColorConverter = new GreyscaleColorPixelConverterB()
+                //Converter = new GreyscalePixelConverterB()
             };
-            Bitmap original = (Bitmap)Image.FromFile(ImageFile);
+            Bitmap original = (Bitmap)System.Drawing.Image.FromFile(ImageFile);
 
-            ConsoleImage.Draw(original, settings);
+            ConsoleImage.DrawAnimate(original, () => Console.KeyAvailable, settings);
 
             Console.ReadKey();
         }

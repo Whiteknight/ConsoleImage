@@ -3,36 +3,32 @@ using System.Drawing;
 
 namespace ConsoleImage
 {
-    // TODO: Bounds checking, etc
     public class ImageBuffer
     {
-        private readonly int m_width;
-        private readonly int m_height;
-        private readonly ConsolePixel[,] m_buffer;
+        private readonly ConsolePixel[,] _mBuffer;
 
         public ImageBuffer(Size size)
         {
-            m_width = size.Width;
-            m_height = size.Height;
-            m_buffer = new ConsolePixel[m_height, m_width];
-        }
+            if (size.Height <= 0 || size.Width <= 0)
+                throw new Exception("Width and height must be strictly positive");
 
-        public ImageBuffer(int width, int height)
-        {
-            m_width = width;
-            m_height = height;
-            m_buffer = new ConsolePixel[height, width];
+            _mBuffer = new ConsolePixel[size.Height, size.Width];
         }
 
         public void SetPixel(int left, int top, ConsolePixel pixel)
         {
-            m_buffer[top, left] = pixel;
+            //if (left > _mBuffer.GetLength(0) || left < 0 || top > _mBuffer.GetLength(1) || top < 0)
+            //    throw new IndexOutOfRangeException();
+
+            _mBuffer[top, left] = pixel;
         }
 
         public ConsolePixel GetPixel(int left, int top)
         {
-            return m_buffer[top, left];
-        }
+            //if (left > _mBuffer.GetLength(0) || left < 0 || top > _mBuffer.GetLength(1) || top < 0)
+            //    throw new IndexOutOfRangeException();
 
+            return _mBuffer[top, left];
+        }
     }
 }

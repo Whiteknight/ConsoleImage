@@ -6,7 +6,24 @@ namespace ConsoleImage
 {
     public class ConsoleImage
     {
-        public static void Draw(Bitmap image, ImageSettings settings = null)
+        public static void Draw(Bitmap bitmap, ImageSettings settings = null)
+        {
+            if (settings == null)
+                settings = new ImageSettings();
+
+            settings.Validate();
+
+            // TODO: using(IDisposable state = ConsoleState.GetRestoreOnDisposeState()) { ... }
+            ConsoleState state = ConsoleState.GetState();
+            Console.OutputEncoding = Encoding.GetEncoding(1252);
+
+            Image image = new ImageBuilder(settings.Sampler, settings.Converter, settings).Build(bitmap);
+            new ImageRenderer(settings).Draw(image);
+
+            state.ResetConsole();
+        }
+
+        public static void DrawAnimate(Bitmap bitmap, Func<bool> shouldStop, ImageSettings settings = null)
         {
             if (settings == null)
                 settings = new ImageSettings();
@@ -16,10 +33,23 @@ namespace ConsoleImage
             ConsoleState state = ConsoleState.GetState();
             Console.OutputEncoding = Encoding.GetEncoding(1252);
 
-            Bitmap bmp = new ImageResizer().Resize(image, settings);
-            IColorPixelConverter converter = settings.ColorConverter ?? new SearchColorPixelConverter();
-            ImageBuffer buffer = new ImageBuilder().Build(converter, bmp);
-            new ImageRenderer().Draw(settings, buffer);
+            Image image = new ImageBuilder(settings.Sampler, settings.Converter, settings).Build(bitmap);
+
+            ImageRenderer renderer = new ImageRenderer(settings);
+
+            bool shouldBreak = false;
+            while (!shouldBreak)
+            {
+                foreach (ImageBuffer buffer in image.Buffers)
+                {
+                    if (shouldStop())
+                    {
+                        shouldBreak = true;
+                        break;
+                    }
+                    renderer.Draw(image.Size, buffer);
+                }
+            }
 
             state.ResetConsole();
         }

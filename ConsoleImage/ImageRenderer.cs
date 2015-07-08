@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace ConsoleImage
 {
@@ -6,38 +7,62 @@ namespace ConsoleImage
     {
         // TODO: Option to draw border
         // TODO: Option to draw caption in various positions
+        // TODO: Move console resizing logic out of this class. Assume the console is the correct size here, or follow
+        // existing console bounds only.
 
-        public void Draw(ImageSettings settings, ImageBuffer buffer)
+        private readonly ImageSettings _settings;
+
+        public ImageRenderer(ImageSettings settings)
         {
-            ResizeConsoleWindow(settings);
+            _settings = settings;
+        }
 
-            for (int i = settings.ImageTop; i < settings.ImageHeight + settings.ImageTop; i++)
+        public void Draw(Image image)
+        {
+            Draw(image.Size, image.CurrentBuffer);
+        }
+
+        public void Draw(Image image, int bufferIdx)
+        {
+            Draw(image.Size, image.GetBuffer(bufferIdx));
+        }
+
+        public void Draw(Size size, ImageBuffer imageBuffer)
+        {
+            ResizeConsoleWindow();
+
+            for (int i = 0; i < size.Height; i++)
             {
-                Console.SetCursorPosition(settings.ConsoleLeft, settings.ConsoleTop + i - settings.ImageTop);
-                DrawRow(settings, buffer, i);
+                Console.SetCursorPosition(_settings.ConsoleLeft, _settings.ConsoleTop + i - _settings.ImageTop);
+                DrawRow(size, imageBuffer, i);
             }
         }
 
-        public void DrawRow(ImageSettings settings, ImageBuffer buffer, int i)
+        public void DrawRow(Size size, Image image, int bufferIdx, int rowIdx)
         {
-            for (int j = settings.ImageLeft; j < settings.ImageWidth + settings.ImageLeft; j++)
+            DrawRow(size, image.GetBuffer(bufferIdx), rowIdx);
+        }
+
+        public void DrawRow(Size size, ImageBuffer imageBuffer, int rowIdx)
+        {
+            for (int j = 0; j < size.Width; j++)
             {
-                ConsolePixel p = buffer.GetPixel(j, i);
+                ConsolePixel p = imageBuffer.GetPixel(j, rowIdx);
                 p.Print();
             }
         }
 
-        private static void ResizeConsoleWindow(ImageSettings settings)
+        private void ResizeConsoleWindow()
         {
-            int minConsoleHeight = settings.ImageHeight + settings.ConsoleTop;
-            if (minConsoleHeight > settings.ConsoleMaxHeight)
-                minConsoleHeight = settings.ConsoleMaxHeight;
+            int minConsoleHeight = _settings.ImageCropSize.Height + _settings.ConsoleTop;
+            if (minConsoleHeight > _settings.ConsoleMaxSize.Height)
+                minConsoleHeight = _settings.ConsoleMaxSize.Height;
             if (Console.WindowHeight < minConsoleHeight)
                 Console.WindowHeight = minConsoleHeight;
 
-            int minConsoleWidth = settings.ImageWidth + settings.ConsoleLeft;
-            if (minConsoleWidth > settings.ConsoleMaxWidth)
-                minConsoleWidth = settings.ConsoleMaxWidth;
+            int minConsoleWidth = _settings.ImageCropSize.Width + _settings.ConsoleLeft;
+            if (minConsoleWidth > _settings.ConsoleMaxSize.Width)
+                minConsoleWidth = _settings.ConsoleMaxSize.Width;
             if (Console.WindowWidth < minConsoleWidth)
                 Console.WindowWidth = minConsoleWidth;
         }

@@ -33,4 +33,10 @@ namespace ConsoleImage
             Console.OutputEncoding = m_outputEncoding;
         }
     }
+
+    // TODO: Implement this
+    //public class RestoreOnDisposeConsoleState : IDisposable
+    //{
+        
+    //}
 }

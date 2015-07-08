@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace ConsoleImage
 {
@@ -8,9 +9,12 @@ namespace ConsoleImage
         {
             ConsoleTop = 0;
             ConsoleLeft = 0;
-            ConsoleMaxWidth = Console.WindowWidth;
-            ConsoleMaxHeight = Console.LargestWindowHeight;
-
+            ConsoleMaxSize = new Size
+            {
+                Width = Console.WindowWidth,
+                Height = Console.LargestWindowHeight
+            };
+            
             ImageTop = 0;
             ImageLeft = 0;
 
@@ -19,8 +23,10 @@ namespace ConsoleImage
 
         public int ImageTop { get; set; }
         public int ImageLeft { get; set; }
-        public int ImageWidth { get; set; }
-        public int ImageHeight { get; set; }
+
+        // The size of the area of the image to use. This is cropped from the larger image, and will default to the
+        // total size of the image unless a cropped region is specified
+        public Size ImageCropSize { get; set; }
 
         // The distance from the top of the console to start drawing
         public int ConsoleTop { get; set; }
@@ -28,29 +34,40 @@ namespace ConsoleImage
         // The distance from the left of the console to start drawing
         public int ConsoleLeft { get; set;  }
 
-        // The maximum width of the console window
-        public int ConsoleMaxWidth { get; set; }
-
-        // The maximum height of the console window
-        public int ConsoleMaxHeight { get; set;  }
+        // The maximum size of the console or console region to use for rendering
+        public Size ConsoleMaxSize { get; set; }
 
         public ConsoleColor TransparencyColor { get; set; }
         public string SaveResizedImageAs { get; set; }
-        public IColorPixelConverter ColorConverter { get; set; }
+
+        private IPixelConverter _converter;
+        public IPixelConverter Converter {
+            get { return _converter ?? (_converter = new SearchPixelConverter()); }
+            set { _converter = value; }
+        }
+
+        private IImageSampler _sampler;
+        public IImageSampler Sampler {
+            get { return _sampler ?? (_sampler = new AveragingImageSampler()); }
+            set { _sampler = value; }
+        }
         //bmp.Save(@"C:\Users\awhitworth\Pictures\Cute-Cats-063-resize.jpg");
 
         public void Validate()
         {
-            if (ConsoleLeft + ConsoleMaxWidth > Console.LargestWindowWidth)
+            if (ConsoleLeft + ConsoleMaxSize.Width > Console.LargestWindowWidth)
                 throw new Exception("Window is too small");
-            if (ConsoleTop + ConsoleMaxHeight > Console.LargestWindowHeight)
+            if (ConsoleTop + ConsoleMaxSize.Height > Console.LargestWindowHeight)
                 throw new Exception("Window is too short");
         }
 
         public void SetMaxImageSize()
         {
-            ConsoleMaxHeight = Console.LargestWindowHeight;
-            ConsoleMaxWidth = Console.LargestWindowWidth;
+            ConsoleMaxSize = new Size
+            {
+                Width = Console.LargestWindowHeight,
+                Height = Console.LargestWindowHeight
+            };
         }
     }
 }

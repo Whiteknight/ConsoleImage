@@ -46,6 +46,8 @@
     <Compile Include="ConsolePixel.cs" />
     <Compile Include="ConsolePixelRepository.cs" />
     <Compile Include="ConsoleState.cs" />
+    <Compile Include="IImageSampler.cs" />
+    <Compile Include="Image.cs" />
     <Compile Include="ImageBuffer.cs" />
     <Compile Include="ImageBuilder.cs" />
     <Compile Include="ImageRenderer.cs" />

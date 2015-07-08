@@ -4,12 +4,12 @@ using System.Drawing;
 
 namespace ConsoleImage
 {
-    public interface IColorPixelConverter
+    public interface IPixelConverter
     {
         ConsolePixel CreatePixel(Color c);
     }
 
-    public class SimpleColorPixelConverterA : IColorPixelConverter
+    public class SimplePixelConverterA : IPixelConverter
     {
         public ConsolePixel CreatePixel(Color c)
         {
@@ -27,18 +27,18 @@ namespace ConsoleImage
             int gFgComp = (gBright < 2 ? 0 : 2) | (gBright >= 5 ? 8 : 0);
             int bFgComp = (bBright < 2 ? 0 : 1) | (bBright >= 5 ? 8 : 0);
 
-            ConsoleColor fgColor = (ConsoleColor)(rFgComp | gFgComp | gFgComp);
+            ConsoleColor fgColor = (ConsoleColor)(rFgComp | gFgComp | bFgComp);
             char ch = ' ';
 
             return new ConsolePixel(bgColor, fgColor, ch);
         }
     }
 
-    public class SearchColorPixelConverter : IColorPixelConverter
+    public class SearchPixelConverter : IPixelConverter
     {
         private readonly ConsolePixelRepository _repository;
 
-        public SearchColorPixelConverter()
+        public SearchPixelConverter()
         {
             _repository = new ConsolePixelRepository(new List<IPixelSource> {
                 new GrayscalePixelSource(),
@@ -52,11 +52,11 @@ namespace ConsoleImage
         }
     }
 
-    public class GreyscaleColorPixelConverterB : IColorPixelConverter
+    public class GreyscalePixelConverterB : IPixelConverter
     {
         private readonly ConsolePixelRepository _repository;
 
-        public GreyscaleColorPixelConverterB()
+        public GreyscalePixelConverterB()
         {
             _repository = new ConsolePixelRepository(new List<IPixelSource> {
                 new GrayscalePixelSource(),
@@ -70,11 +70,11 @@ namespace ConsoleImage
         }
     }
 
-    public class InvertBlockColorPixelConverterB : IColorPixelConverter
+    public class InvertBlockPixelConverterB : IPixelConverter
     {
         private readonly ConsolePixelRepository _repository;
 
-        public InvertBlockColorPixelConverterB()
+        public InvertBlockPixelConverterB()
         {
             _repository = new ConsolePixelRepository(new List<IPixelSource> {
                 new GrayscalePixelSource(),
