@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Text;
+using System.Threading;
 
 namespace ConsoleImage
 {
@@ -45,14 +46,24 @@ namespace ConsoleImage
             bool shouldBreak = false;
             while (!shouldBreak)
             {
-                foreach (ImageBuffer buffer in image.Buffers)
+                if (image.NumberOfBuffers == 1)
                 {
-                    if (shouldStop())
+                    renderer.Draw(image.CurrentBuffer);
+                    while (!shouldStop())
+                        Thread.Sleep(200);
+                    shouldBreak = true;
+                }
+                else
+                {
+                    foreach (ImageBuffer buffer in image.Buffers)
                     {
-                        shouldBreak = true;
-                        break;
+                        if (shouldStop())
+                        {
+                            shouldBreak = true;
+                            break;
+                        }
+                        renderer.Draw(buffer);
                     }
-                    renderer.Draw(buffer);
                 }
             }
 

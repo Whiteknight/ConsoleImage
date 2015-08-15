@@ -120,7 +120,7 @@ namespace ConsoleImage
 
             public int Count
             {
-                get { return _buffers.Count; }
+                get { return _frameCount; }
             }
 
             public void SetNumberOfBuffers(int numberOfBuffers)

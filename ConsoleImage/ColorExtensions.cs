@@ -41,21 +41,24 @@ namespace ConsoleImage
 
         public static Color BlendTransparency(this Color fg, Color bg)
         {
+            if (fg.A == 255)
+                return fg;
             return Blend(fg, bg, (fg.A / 255.0));
         }
 
         public static Color Blend(this Color c1, Color c2, double percent)
         {
+            percent = percent / 100.0;
             int r = BlendColorComponent(c1.R, c2.R, percent);
             int g = BlendColorComponent(c1.G, c2.G, percent);
             int b = BlendColorComponent(c1.B, c2.B, percent);
             return Color.FromArgb(r, g, b);
         }
 
-        private static byte BlendColorComponent(int comp1, int comp2, double percent)
+        private static byte BlendColorComponent(int comp1, int comp2, double portion)
         {
-            int part1 = (int)(comp1 * percent);
-            int part2 = (int)(comp2 * (1.0 - percent));
+            int part1 = (int)(comp1 * portion);
+            int part2 = (int)(comp2 * (1.0 - portion));
             int total = part1 + part2;
             if (total > 255)
                 return 255;

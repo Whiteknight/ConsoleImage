@@ -42,14 +42,14 @@ namespace ConsoleImage
             if (c.IsGrayscale())
                 pixels = _grayscalePixels;
 
-            ConsolePixel pixel = pixels
+            var w = pixels
                 .Select(p => new {
                     Pixel = p,
                     Distance = c.DistanceTo(p.Color)
                 })
                 .OrderBy(x => x.Distance)
-                .Select(x => x.Pixel)
-                .First();
+                .ToList();
+            ConsolePixel pixel = w[0].Pixel;
 
             _pixelCache.Add(key, pixel);
             return pixel;
