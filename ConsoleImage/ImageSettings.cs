@@ -7,35 +7,37 @@ namespace ConsoleImage
     {
         public ImageSettings()
         {
-            ConsoleTop = 0;
-            ConsoleLeft = 0;
-            ConsoleMaxSize = new Size
+            ConsoleStart = new Point {
+                X = 0,
+                Y = 0
+            };
+
+            ImageMaxSize = new Size
             {
                 Width = Console.WindowWidth,
                 Height = Console.LargestWindowHeight
             };
-            
-            ImageTop = 0;
-            ImageLeft = 0;
+
+            ImageRegionStart = new Point {
+                X = 0,
+                Y = 0
+            };
 
             TransparencyColor = Console.BackgroundColor;
         }
 
-        public int ImageTop { get; set; }
-        public int ImageLeft { get; set; }
+        // Starting position within the image. 
+        public Point ImageRegionStart { get; set; }
 
         // The size of the area of the image to use. This is cropped from the larger image, and will default to the
         // total size of the image unless a cropped region is specified
         public Size ImageCropSize { get; set; }
 
-        // The distance from the top of the console to start drawing
-        public int ConsoleTop { get; set; }
+        // The upper-left pixel in the console to start rendering
+        public Point ConsoleStart { get; set; }
 
-        // The distance from the left of the console to start drawing
-        public int ConsoleLeft { get; set;  }
-
-        // The maximum size of the console or console region to use for rendering
-        public Size ConsoleMaxSize { get; set; }
+        // The largest size of the image for rendering. Defaults to the maximum size of the console window
+        public Size ImageMaxSize { get; set; }
 
         public ConsoleColor TransparencyColor { get; set; }
         public string SaveResizedImageAs { get; set; }
@@ -62,15 +64,15 @@ namespace ConsoleImage
 
         public void Validate()
         {
-            if (ConsoleLeft + ConsoleMaxSize.Width > Console.LargestWindowWidth)
+            if (ConsoleStart.X + ImageMaxSize.Width > Console.LargestWindowWidth)
                 throw new Exception("Window is too small");
-            if (ConsoleTop + ConsoleMaxSize.Height > Console.LargestWindowHeight)
+            if (ConsoleStart.Y + ImageMaxSize.Height > Console.LargestWindowHeight)
                 throw new Exception("Window is too short");
         }
 
         public void SetMaxImageSize()
         {
-            ConsoleMaxSize = new Size
+            ImageMaxSize = new Size
             {
                 Width = Console.LargestWindowHeight,
                 Height = Console.LargestWindowHeight

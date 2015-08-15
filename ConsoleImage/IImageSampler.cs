@@ -4,40 +4,18 @@ namespace ConsoleImage
 {
     public interface IImageSampler
     {
-        Color GetSampleColor(Size bufferSize, Bitmap bmp, int left, int top);
+        Color GetSampleColor(Size bufferSize, Bitmap bmp, int left, int top, Color bgColor);
     }
 
     public class AveragingImageSampler : IImageSampler
     {
-        public Color GetSampleColor(Size bufferSize, Bitmap bmp, int left, int top)
+        public Color GetSampleColor(Size bufferSize, Bitmap bmp, int left, int top, Color bgColor)
         {
-            // TODO: Handle transparency. Take the background color from the settings
-            // object and combine together based on transparency.
-
             double x = ((double)bmp.Size.Width / bufferSize.Width) * left;
             double y = ((double)bmp.Size.Height / bufferSize.Height) * top;
 
-            return bmp.GetPixel((int)x, (int)y);
-
-            //int totalRed = 0;
-            //int totalGreen = 0;
-            //int totalBlue = 0;
-
-            //int numPixels = 0;
-
-            //for (int i = top * sampleSize.Height; i < (top + 1) * sampleSize.Height; i++)
-            //{
-            //    for (int j = left * sampleSize.Width; j < (left + 1) * sampleSize.Width; j++)
-            //    {
-            //        Color c = bmp.GetPixel(j, i);
-            //        totalRed += c.R;
-            //        totalGreen += c.G;
-            //        totalBlue += c.B;
-            //        numPixels++;
-            //    }
-            //}
-
-            //return Color.FromArgb(totalRed / numPixels, totalGreen / numPixels, totalBlue / numPixels);
+            Color c = bmp.GetPixel((int)x, (int)y);
+            return c.BlendTransparency(bgColor);
         }
     }
 }

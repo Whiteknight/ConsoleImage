@@ -23,15 +23,15 @@ namespace ConsoleImage
             if (_settings.ImageCropSize.Width > 0 && _settings.ImageCropSize.Width < image.Size.Width)
                 imageWidth = _settings.ImageCropSize.Width;
 
-            int minConsoleHeight = imageHeight + _settings.ConsoleTop;
-            if (minConsoleHeight > _settings.ConsoleMaxSize.Height)
-                minConsoleHeight = _settings.ConsoleMaxSize.Height;
+            int minConsoleHeight = imageHeight + _settings.ConsoleStart.Y;
+            if (minConsoleHeight > _settings.ImageMaxSize.Height)
+                minConsoleHeight = _settings.ImageMaxSize.Height;
             if (Console.WindowHeight < minConsoleHeight)
                 Console.WindowHeight = minConsoleHeight;
 
-            int minConsoleWidth = imageWidth + _settings.ConsoleLeft;
-            if (minConsoleWidth > _settings.ConsoleMaxSize.Width)
-                minConsoleWidth = _settings.ConsoleMaxSize.Width;
+            int minConsoleWidth = imageWidth + _settings.ConsoleStart.X;
+            if (minConsoleWidth > _settings.ImageMaxSize.Width)
+                minConsoleWidth = _settings.ImageMaxSize.Width;
             if (Console.WindowWidth < minConsoleWidth)
                 Console.WindowWidth = minConsoleWidth;
         }

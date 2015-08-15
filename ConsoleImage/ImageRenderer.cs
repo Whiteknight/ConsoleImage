@@ -29,9 +29,8 @@ namespace ConsoleImage
 
         public void Draw(Size size, ImageBuffer imageBuffer)
         {
-            _settings.RenderStrategy.Render(_settings.ConsoleLeft, _settings.ConsoleTop - _settings.ImageTop, size, imageBuffer);
+            _settings.RenderStrategy.Render(_settings.ConsoleStart.X, _settings.ConsoleStart.Y, size, imageBuffer);
         }
-
     }
 
     public interface IRenderStrategy

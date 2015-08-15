@@ -39,13 +39,10 @@ namespace ConsoleImage
             return Color.FromArgb(255 - c.R, 255 - c.G, 255 - c.B);
         }
 
-        //public static Color BlendTransparency(this Color fg, Color bg)
-        //{
-        //    int a = fg.A & 0xFC;
-
-        //    if (a == 0)
-        //        return fg;
-        //}
+        public static Color BlendTransparency(this Color fg, Color bg)
+        {
+            return Blend(fg, bg, (fg.A / 255.0));
+        }
 
         public static Color Blend(this Color c1, Color c2, double percent)
         {

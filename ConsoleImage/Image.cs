@@ -67,7 +67,7 @@ namespace ConsoleImage
             public ImageBufferSet(Bitmap bmp, ImageSettings settings)
             {
                 _settings = settings;
-                _size = CalculateImageSize(bmp, _settings.ConsoleMaxSize, _settings.ConsoleLeft, _settings.ConsoleTop);
+                _size = CalculateImageSize(bmp, _settings.ImageMaxSize, _settings.ConsoleStart.X, _settings.ConsoleStart.Y);
 
                 _frameDimension = new FrameDimension(bmp.FrameDimensionsList[0]);
                 _frameCount = bmp.GetFrameCount(_frameDimension);
@@ -103,11 +103,13 @@ namespace ConsoleImage
                     _buffers.Insert(bufferIdx, buffer);
                     _bmp.SelectActiveFrame(_frameDimension, bufferIdx);
 
+                    Color bgColor = _settings.TransparencyColor.GetColor();
+
                     for (int i = 0; i < _size.Height; i++)
                     {
                         for (int j = 0; j < _size.Width; j++)
                         {
-                            Color c = _settings.Sampler.GetSampleColor(_size, _bmp, j, i);
+                            Color c = _settings.Sampler.GetSampleColor(_size, _bmp, j, i, bgColor);
                             ConsolePixel pixel = _settings.Converter.CreatePixel(c);
                             buffer.SetPixel(j, i, pixel);
                         }

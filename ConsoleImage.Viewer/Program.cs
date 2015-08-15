@@ -7,19 +7,29 @@ namespace ConsoleImage.Viewer
     {
         static void Main(string[] args)
         {
-            // TODO: Need support for transparency, default background color
             // TODO: Fix/Test resizing and cropping
 
             ImageSettings settings = new ImageSettings {
                 //ImageLeft = 50,
                 //ImageTop = 60,
-                //ImageWidth = 30,
-                //ImageHeight = 20
-                //ConsoleLeft = 5,
-                //ConsoleTop = 3,
-                //ConsoleMaxHeight = 25,
-                //ConsoleMaxWidth = 40
+                ImageMaxSize = new Size {
+                    Height = 50,
+                    Width = 50
+                },
+                // TODO: Fix these
+
+                ImageRegionStart = new Point {
+                    X = 20,
+                    Y = 20
+                },
+
+                ConsoleStart = new Point {
+                    X = 10,
+                    Y = 5
+                },
+
                 //Converter = new GreyscalePixelConverterB()
+                TransparencyColor = ConsoleColor.White
             };
             Bitmap original = (Bitmap)System.Drawing.Image.FromFile(args[0]);
 
