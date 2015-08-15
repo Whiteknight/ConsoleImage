@@ -51,6 +51,13 @@ namespace ConsoleImage
             get { return _sampler ?? (_sampler = new AveragingImageSampler()); }
             set { _sampler = value; }
         }
+
+        private IRenderStrategy _renderStrategy;
+        public IRenderStrategy RenderStrategy
+        {
+            get { return _renderStrategy ?? (_renderStrategy = new ProgressiveRenderStrategy()); }
+            set { _renderStrategy = value; }
+        }
         //bmp.Save(@"C:\Users\awhitworth\Pictures\Cute-Cats-063-resize.jpg");
 
         public void Validate()

@@ -19,7 +19,7 @@ namespace ConsoleImage
 
             Image image = new Image(bitmap, settings);
             ImageRenderer renderer = new ImageRenderer(settings);
-            renderer.ResizeConsoleWindow(image);
+            new ConsoleManager(settings).ResizeConsoleWindow(image);
             renderer.Draw(image);
 
             state.ResetConsole();
@@ -38,7 +38,7 @@ namespace ConsoleImage
             Image image = new Image(bitmap, settings);
 
             ImageRenderer renderer = new ImageRenderer(settings);
-            renderer.ResizeConsoleWindow(image);
+            new ConsoleManager(settings).ResizeConsoleWindow(image);
 
             bool shouldBreak = false;
             while (!shouldBreak)

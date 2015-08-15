@@ -29,19 +29,19 @@ namespace ConsoleImage
 
         public void Draw(Size size, ImageBuffer imageBuffer)
         {
-            for (int i = 0; i < size.Height; i++)
-            {
-                Console.SetCursorPosition(_settings.ConsoleLeft, _settings.ConsoleTop + i - _settings.ImageTop);
-                DrawRow(size, imageBuffer, i);
-            }
+            _settings.RenderStrategy.Render(_settings.ConsoleLeft, _settings.ConsoleTop - _settings.ImageTop, size, imageBuffer);
         }
 
-        public void DrawRow(Size size, Image image, int bufferIdx, int rowIdx)
-        {
-            DrawRow(size, image.GetBuffer(bufferIdx), rowIdx);
-        }
+    }
 
-        public void DrawRow(Size size, ImageBuffer imageBuffer, int rowIdx)
+    public interface IRenderStrategy
+    {
+        void Render(int left, int top, Size size, ImageBuffer imageBuffer);
+    }
+
+    public abstract class RenderStrategyBase : IRenderStrategy
+    {
+        protected void DrawRow(Size size, ImageBuffer imageBuffer, int rowIdx)
         {
             for (int j = 0; j < size.Width; j++)
             {
@@ -50,27 +50,78 @@ namespace ConsoleImage
             }
         }
 
-        public void ResizeConsoleWindow(Image image)
+        #region Implementation of IRenderStrategy
+
+        public abstract void Render(int left, int top, Size size, ImageBuffer imageBuffer);
+
+        #endregion
+    }
+
+    public class InterlacedRenderStrategy : RenderStrategyBase
+    {
+        #region Implementation of IRenderStrategy
+
+        public override void Render(int left, int top, Size size, ImageBuffer imageBuffer)
         {
-            int imageHeight = image.Size.Height;
-            if (_settings.ImageCropSize.Height > 0 && _settings.ImageCropSize.Height < image.Size.Height)
-                imageHeight = _settings.ImageCropSize.Height;
-
-            int imageWidth = image.Size.Width;
-            if (_settings.ImageCropSize.Width > 0 && _settings.ImageCropSize.Width < image.Size.Width)
-                imageWidth = _settings.ImageCropSize.Width;
-
-            int minConsoleHeight = imageHeight + _settings.ConsoleTop;
-            if (minConsoleHeight > _settings.ConsoleMaxSize.Height)
-                minConsoleHeight = _settings.ConsoleMaxSize.Height;
-            if (Console.WindowHeight < minConsoleHeight)
-                Console.WindowHeight = minConsoleHeight;
-
-            int minConsoleWidth = imageWidth + _settings.ConsoleLeft;
-            if (minConsoleWidth > _settings.ConsoleMaxSize.Width)
-                minConsoleWidth = _settings.ConsoleMaxSize.Width;
-            if (Console.WindowWidth < minConsoleWidth)
-                Console.WindowWidth = minConsoleWidth;
+            for (int i = 0; i < size.Height; i += 2)
+            {
+                Console.SetCursorPosition(left, top + i);
+                DrawRow(size, imageBuffer, i);
+            }
+            for (int i = 1; i < size.Height; i += 2)
+            {
+                Console.SetCursorPosition(left, top + i);
+                DrawRow(size, imageBuffer, i);
+            }
         }
+
+        #endregion
+    }
+
+    public class ProgressiveRenderStrategy : RenderStrategyBase
+    {
+        #region Implementation of IRenderStrategy
+
+        public override void Render(int left, int top, Size size, ImageBuffer imageBuffer)
+        {
+            for (int i = 0; i < size.Height; i++)
+            {
+                Console.SetCursorPosition(left, top + i);
+                DrawRow(size, imageBuffer, i);
+            }
+        }
+
+        #endregion
+    }
+
+    public class Interlaced2RenderStrategy : RenderStrategyBase
+    {
+        #region Implementation of IRenderStrategy
+
+        public override void Render(int left, int top, Size size, ImageBuffer imageBuffer)
+        {
+            for (int i = 0; i < size.Height; i += 4)
+            {
+                Console.SetCursorPosition(left, top + i);
+                DrawRow(size, imageBuffer, i);
+            }
+            for (int i = 2; i < size.Height; i += 4)
+            {
+                Console.SetCursorPosition(left, top + i);
+                DrawRow(size, imageBuffer, i);
+            }
+            for (int i = 1; i < size.Height; i += 2)
+            {
+                Console.SetCursorPosition(left, top + i);
+                DrawRow(size, imageBuffer, i);
+            }
+            for (int i = 3; i < size.Height; i += 2)
+            {
+                Console.SetCursorPosition(left, top + i);
+                DrawRow(size, imageBuffer, i);
+            }
+        }
+
+        #endregion
     }
 }
