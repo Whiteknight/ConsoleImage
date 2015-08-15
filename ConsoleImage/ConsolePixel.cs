@@ -1,5 +1,6 @@
 ﻿﻿using System;
 ﻿using System.Collections.Generic;
+﻿using System.Drawing;
 
 namespace ConsoleImage
 {
@@ -13,22 +14,22 @@ namespace ConsoleImage
         private const int G2 = 194;
 
         private static readonly Dictionary<ConsoleColor, int[]> _colorLookup = new Dictionary<ConsoleColor, int[]> {
-            { ConsoleColor.Black, new int[] { BL, BL, BL }},
-            { ConsoleColor.Blue, new int[] { BL, BL, L }},
-            { ConsoleColor.Cyan, new int[] { BL, L, L }},
-            { ConsoleColor.DarkBlue, new int[] { BD, BD, D }},
-            { ConsoleColor.DarkCyan, new int[] { BD, D, D }},
-            { ConsoleColor.DarkGray, new int[] { G1, G1, G1 }},
-            { ConsoleColor.DarkGreen, new int[] { BD, D, BD }},
-            { ConsoleColor.DarkMagenta, new int[] { D, BD, D }},
-            { ConsoleColor.DarkRed, new int[] { D, BD, BD }},
-            { ConsoleColor.DarkYellow, new int[] {D, D, BD }},
-            { ConsoleColor.Gray, new int[] { G2, G2, G2 }},
-            { ConsoleColor.Green, new int[] { BL, L, BL }},
-            { ConsoleColor.Magenta, new int[] { L, BL, L }},
-            { ConsoleColor.Red, new int[] { L, BL, BL }},
-            { ConsoleColor.White, new int[] { L, L, L }},
-            { ConsoleColor.Yellow, new int[] { L, L, BL }}
+            { ConsoleColor.Black, new[] { BL, BL, BL }},
+            { ConsoleColor.Blue, new[] { BL, BL, L }},
+            { ConsoleColor.Cyan, new[] { BL, L, L }},
+            { ConsoleColor.DarkBlue, new[] { BD, BD, D }},
+            { ConsoleColor.DarkCyan, new[] { BD, D, D }},
+            { ConsoleColor.DarkGray, new[] { G1, G1, G1 }},
+            { ConsoleColor.DarkGreen, new[] { BD, D, BD }},
+            { ConsoleColor.DarkMagenta, new[] { D, BD, D }},
+            { ConsoleColor.DarkRed, new[] { D, BD, BD }},
+            { ConsoleColor.DarkYellow, new[] {D, D, BD }},
+            { ConsoleColor.Gray, new[] { G2, G2, G2 }},
+            { ConsoleColor.Green, new[] { BL, L, BL }},
+            { ConsoleColor.Magenta, new[] { L, BL, L }},
+            { ConsoleColor.Red, new[] { L, BL, BL }},
+            { ConsoleColor.White, new[] { L, L, L }},
+            { ConsoleColor.Yellow, new[] { L, L, BL }}
         };
 
         // percentage of the background color which shows with each glyph
@@ -52,9 +53,10 @@ namespace ConsoleImage
             int[] color1 = _colorLookup[backgroundColor];
             int[] color2 = _colorLookup[foregroundColor];
 
-            Red = CalculateColor(color1[0], color2[0], _percent);
-            Green = CalculateColor(color1[1], color2[1], _percent);
-            Blue = CalculateColor(color1[2], color2[2], _percent);
+            int r = CalculateColor(color1[0], color2[0], _percent);
+            int g = CalculateColor(color1[1], color2[1], _percent);
+            int b = CalculateColor(color1[2], color2[2], _percent);
+            Color = Color.FromArgb(r, g, b);
         }
 
         private static byte CalculateColor(int color1, int color2, int percent)
@@ -83,62 +85,19 @@ namespace ConsoleImage
 
         public ConsolePixel Invert()
         {
-            return new ConsolePixel(InvertColor(BackgroundColor), InvertColor(ForegroundColor), PrintableCharacter);
+            return new ConsolePixel(BackgroundColor.Invert(), ForegroundColor.Invert(), PrintableCharacter);
         }
 
-        public byte Brightness
-        {
-            get { return (byte)(((int) Red + (int) Blue + (int) Green)/3); } 
-        }
-
-        // TODO : store these as Color structs
-        public byte Red { get; private set; }
-        public byte Blue { get; private set; }
-        public byte Green { get; private set; }
-
-        public byte RedRounded
-        {
-            get { return (byte)(Red & 0xFC); }
-        }
-
-        public byte BlueRounded
-        {
-            get { return (byte)(Blue & 0xFC); }
-        }
-
-        public byte GreenRounded
-        {
-            get { return (byte)(Green & 0xFC); }
-        }
-
-        public int Rgb
-        {
-            get { return (Red << 16) | (Green << 8) | Blue; }
-        }
-
-        public int RgbRounded
-        {
-            get { return Rgb & 0x00FCFCFC; }
-        }
+        public Color Color { get; private set; }
 
         public int AsInt
         {
-            get { return (((byte) PrintableCharacter) << 8) | ((byte) BackgroundColor << 4) | ((byte) ForegroundColor); }
+            get { return Color.GetRgbInt(); }
         }
 
         public bool IsGrayscale
         {
-            get { return IsColorGrayscale(BackgroundColor) && (_percent == 0 || IsColorGrayscale(ForegroundColor)); }
-        }
-
-        private static bool IsColorGrayscale(ConsoleColor cc)
-        {
-            return cc == ConsoleColor.Black || cc == ConsoleColor.Gray || cc == ConsoleColor.DarkGray || cc == ConsoleColor.White;
-        }
-
-        private static ConsoleColor InvertColor(ConsoleColor cc)
-        {
-            return (ConsoleColor) (~((byte) cc) & 0x0F);
+            get { return BackgroundColor.IsGrayscale() && (_percent == 0 || ForegroundColor.IsGrayscale()); }
         }
     }
 } 

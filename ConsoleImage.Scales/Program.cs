@@ -78,7 +78,7 @@ namespace ConsoleImage.Scales
                 p.Print();
                 Console.ForegroundColor = ConsoleColor.Gray;
                 Console.BackgroundColor = ConsoleColor.Black;
-                Console.WriteLine(" ({0},{1},{2})", p.Red, p.Green, p.Blue);
+                Console.WriteLine(" ({0},{1},{2})", p.Color.R, p.Color.G, p.Color.B);
             }
 
             Console.WriteLine();

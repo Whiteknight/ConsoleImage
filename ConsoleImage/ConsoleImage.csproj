@@ -41,7 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColorPixelConverter.cs" />
-    <Compile Include="ConsoleColorUtility.cs" />
+    <Compile Include="ColorExtensions.cs" />
+    <Compile Include="ConsoleColorExtensions.cs" />
     <Compile Include="ConsoleImage.cs" />
     <Compile Include="ConsolePixel.cs" />
     <Compile Include="ConsolePixelRepository.cs" />

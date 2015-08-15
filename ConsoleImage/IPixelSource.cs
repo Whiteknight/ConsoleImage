@@ -70,17 +70,17 @@ namespace ConsoleImage
                     ConsolePixel p = GetBlendColorPixel(colors[i], colors[(i + 1) % colors.Length], j);
                     yield return p;
 
-                    p = GetBlendColorPixel(ConsoleColorUtility.MakeDark(colors[i]), ConsoleColorUtility.MakeDark(colors[(i + 1) % colors.Length]), j);
+                    p = GetBlendColorPixel(ConsoleColorExtensions.MakeDark(colors[i]), ConsoleColorExtensions.MakeDark(colors[(i + 1) % colors.Length]), j);
                     yield return p;
                 }
 
                 // Get diagonal bright-dark color blends
                 for (int j = 0; j < 4; j++)
                 {
-                    ConsolePixel p = GetBlendColorPixel(colors[i], ConsoleColorUtility.MakeDark(colors[(i + 1) % colors.Length]), j);
+                    ConsolePixel p = GetBlendColorPixel(colors[i], ConsoleColorExtensions.MakeDark(colors[(i + 1) % colors.Length]), j);
                     yield return p;
 
-                    p = GetBlendColorPixel(colors[i], ConsoleColorUtility.MakeDark(colors[(i + colors.Length - 1) % colors.Length]), j);
+                    p = GetBlendColorPixel(colors[i], ConsoleColorExtensions.MakeDark(colors[(i + colors.Length - 1) % colors.Length]), j);
                     yield return p;
                 }
 
@@ -90,7 +90,7 @@ namespace ConsoleImage
                     ConsolePixel p = GetBlendColorPixel(colors[i], ConsoleColor.Gray, j);
                     yield return p;
 
-                    p = GetBlendColorPixel(ConsoleColorUtility.MakeDark(colors[i]), ConsoleColor.DarkGray, j);
+                    p = GetBlendColorPixel(ConsoleColorExtensions.MakeDark(colors[i]), ConsoleColor.DarkGray, j);
                     yield return p;
                 }
             }
@@ -119,8 +119,8 @@ namespace ConsoleImage
             if (i < 0)
                 i = 0;
             const string blocks = " \xB0\xB1\xB2 \xB0\xB1\xB2 \xB0\xB1\xB2 ";
-            ConsoleColor bright = ConsoleColorUtility.MakeBright(baseColor);
-            ConsoleColor dark = ConsoleColorUtility.MakeDark(baseColor);
+            ConsoleColor bright = ConsoleColorExtensions.MakeBright(baseColor);
+            ConsoleColor dark = ConsoleColorExtensions.MakeDark(baseColor);
             ConsoleColor[] scales = new[] { ConsoleColor.Black, dark, bright, ConsoleColor.White, ConsoleColor.White };
             int gidx = i / 4;
             ConsoleColor bg = scales[gidx];
