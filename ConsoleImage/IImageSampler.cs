@@ -13,17 +13,11 @@ namespace ConsoleImage
         {
             // TODO: Handle transparency. Take the background color from the settings
             // object and combine together based on transparency.
-            // TODO: sampleSize is not an integer. We need to handle cases where the
-            // ratio is non-integral
-            // TODO: Sample size is constant per image. Calculate this value once per
-            // image and cache it.
-            Size sampleSize = new Size
-            {
-                Height = bmp.Size.Height / bufferSize.Height,
-                Width = bmp.Size.Width / bufferSize.Width
-            };
 
-            return bmp.GetPixel(left * sampleSize.Width, top * sampleSize.Height);
+            double x = ((double)bmp.Size.Width / bufferSize.Width) * left;
+            double y = ((double)bmp.Size.Height / bufferSize.Height) * top;
+
+            return bmp.GetPixel((int)x, (int)y);
 
             //int totalRed = 0;
             //int totalGreen = 0;
