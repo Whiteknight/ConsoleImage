@@ -8,18 +8,23 @@ namespace ConsoleImage
     public class ConsolePixelRepository
     {
         private readonly IReadOnlyList<ConsolePixel> _pixels;
+        private readonly IReadOnlyList<ConsolePixel> _grayscalePixels;
         private readonly Dictionary<int, ConsolePixel> _pixelCache;
 
         public ConsolePixelRepository(IEnumerable<IPixelSource> sources)
         {
             Dictionary<int, ConsolePixel> pixels = new Dictionary<int, ConsolePixel>();
+            Dictionary<int, ConsolePixel> gsPixels = new Dictionary<int, ConsolePixel>();
             foreach (ConsolePixel p in sources.SelectMany(s => s.GetPixels()))
             {
                 if (!pixels.ContainsKey(p.AsInt))
                     pixels.Add(p.AsInt, p);
+                if (p.IsGrayscale && !gsPixels.ContainsKey(p.AsInt))
+                    gsPixels.Add(p.AsInt, p);
             }
 
             _pixels = pixels.Values.ToList();
+            _grayscalePixels = gsPixels.Values.ToList();
             _pixelCache = new Dictionary<int, ConsolePixel>();
         }
 
@@ -33,7 +38,11 @@ namespace ConsoleImage
             if (_pixelCache.ContainsKey(key))
                 return _pixelCache[key];
 
-            ConsolePixel pixel = _pixels
+            IReadOnlyList<ConsolePixel> pixels = _pixels;
+            if (c.IsGrayscale())
+                pixels = _grayscalePixels;
+
+            ConsolePixel pixel = pixels
                 .Select(p => new {
                     Pixel = p,
                     Distance = c.DistanceTo(p.Color)

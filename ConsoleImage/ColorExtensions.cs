@@ -38,5 +38,40 @@ namespace ConsoleImage
         {
             return Color.FromArgb(255 - c.R, 255 - c.G, 255 - c.B);
         }
+
+        //public static Color BlendTransparency(this Color fg, Color bg)
+        //{
+        //    int a = fg.A & 0xFC;
+
+        //    if (a == 0)
+        //        return fg;
+        //}
+
+        public static Color Blend(this Color c1, Color c2, double percent)
+        {
+            int r = BlendColorComponent(c1.R, c2.R, percent);
+            int g = BlendColorComponent(c1.G, c2.G, percent);
+            int b = BlendColorComponent(c1.B, c2.B, percent);
+            return Color.FromArgb(r, g, b);
+        }
+
+        private static byte BlendColorComponent(int comp1, int comp2, double percent)
+        {
+            int part1 = (int)(comp1 * percent);
+            int part2 = (int)(comp2 * (1.0 - percent));
+            int total = part1 + part2;
+            if (total > 255)
+                return 255;
+            if (total < 0)
+                return 0;
+            return (byte)total;
+        }
+
+        public static bool IsGrayscale(this Color c)
+        {
+            if (c.R - c.G < 5 && c.R - c.B < 5)
+                return true;
+            return false;
+        }
     }
 }
