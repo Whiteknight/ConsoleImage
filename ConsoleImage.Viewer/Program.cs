@@ -5,8 +5,6 @@ namespace ConsoleImage.Viewer
 {
     class Program
     {
-        private const string ImageFile = @"C:\Users\awhitworth\Pictures\1.gif";
-
         static void Main(string[] args)
         {
             // TODO: Need support for transparency, default background color
@@ -23,7 +21,7 @@ namespace ConsoleImage.Viewer
                 //ConsoleMaxWidth = 40
                 //Converter = new GreyscalePixelConverterB()
             };
-            Bitmap original = (Bitmap)System.Drawing.Image.FromFile(ImageFile);
+            Bitmap original = (Bitmap)System.Drawing.Image.FromFile(args[0]);
 
             ConsoleImage.DrawAnimate(original, () => Console.KeyAvailable, settings);
 
