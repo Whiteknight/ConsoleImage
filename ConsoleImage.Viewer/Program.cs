@@ -13,20 +13,20 @@ namespace ConsoleImage.Viewer
             ImageSettings settings = new ImageSettings {
                 //ImageLeft = 50,
                 //ImageTop = 60,
-                ImageMaxSize = new Size {
-                    Height = 50,
-                    Width = 50
-                },
+                //ImageMaxSize = new Size {
+                //    Height = 50,
+                //    Width = 50
+                //},
 
-                ImageCropStart = new Point {
-                    X = 10,
-                    Y = 10
-                },
+                //ImageCropStart = new Point {
+                //    X = 10,
+                //    Y = 10
+                //},
 
-                ImageCropSize = new Size {
-                    Height = 500,
-                    Width = 400
-                },
+                //ImageCropSize = new Size {
+                //    Height = 500,
+                //    Width = 400
+                //},
 
                 ConsoleStart = new Point {
                     X = 10,
@@ -34,7 +34,8 @@ namespace ConsoleImage.Viewer
                 },
 
                 //Converter = new GreyscalePixelConverterB()
-                TransparencyColor = ConsoleColor.White
+                TransparencyColor = ConsoleColor.White,
+                RenderStrategy = new InterlacedRenderStrategy()
             };
             Bitmap original = (Bitmap)System.Drawing.Image.FromFile(args[0]);
 
