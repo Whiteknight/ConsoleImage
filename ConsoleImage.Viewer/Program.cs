@@ -28,14 +28,15 @@ namespace ConsoleImage.Viewer
                 //    Width = 400
                 //},
 
-                ConsoleStart = new Point {
-                    X = 10,
-                    Y = 5
-                },
+                //ConsoleStart = new Point
+                //{
+                //    X = 10,
+                //    Y = 5
+                //},
 
                 //Converter = new GreyscalePixelConverterB()
                 TransparencyColor = ConsoleColor.White,
-                RenderStrategy = new InterlacedRenderStrategy()
+                RenderStrategy = new ProgressiveRenderStrategy()
             };
             Bitmap original = (Bitmap)System.Drawing.Image.FromFile(args[0]);
 

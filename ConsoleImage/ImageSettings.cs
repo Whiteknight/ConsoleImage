@@ -67,10 +67,10 @@ namespace ConsoleImage
 
         public void Validate()
         {
-            if (ConsoleStart.X + ImageMaxSize.Width > Console.LargestWindowWidth)
-                throw new Exception("Window is too small");
-            if (ConsoleStart.Y + ImageMaxSize.Height > Console.LargestWindowHeight)
-                throw new Exception("Window is too short");
+            //if (ConsoleStart.X + ImageMaxSize.Width > Console.LargestWindowWidth)
+            //    throw new Exception("Window is too small");
+            //if (ConsoleStart.Y + ImageMaxSize.Height > Console.LargestWindowHeight)
+            //    throw new Exception("Window is too short");
         }
 
         public void SetMaxImageSize()
