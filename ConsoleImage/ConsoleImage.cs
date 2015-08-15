@@ -18,7 +18,9 @@ namespace ConsoleImage
             Console.OutputEncoding = Encoding.GetEncoding(1252);
 
             Image image = new Image(bitmap, settings);
-            new ImageRenderer(settings).Draw(image);
+            ImageRenderer renderer = new ImageRenderer(settings);
+            renderer.ResizeConsoleWindow(image);
+            renderer.Draw(image);
 
             state.ResetConsole();
         }
@@ -36,6 +38,7 @@ namespace ConsoleImage
             Image image = new Image(bitmap, settings);
 
             ImageRenderer renderer = new ImageRenderer(settings);
+            renderer.ResizeConsoleWindow(image);
 
             bool shouldBreak = false;
             while (!shouldBreak)

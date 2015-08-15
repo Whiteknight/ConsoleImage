@@ -29,8 +29,6 @@ namespace ConsoleImage
 
         public void Draw(Size size, ImageBuffer imageBuffer)
         {
-            ResizeConsoleWindow();
-
             for (int i = 0; i < size.Height; i++)
             {
                 Console.SetCursorPosition(_settings.ConsoleLeft, _settings.ConsoleTop + i - _settings.ImageTop);
@@ -52,15 +50,23 @@ namespace ConsoleImage
             }
         }
 
-        private void ResizeConsoleWindow()
+        public void ResizeConsoleWindow(Image image)
         {
-            int minConsoleHeight = _settings.ImageCropSize.Height + _settings.ConsoleTop;
+            int imageHeight = image.Size.Height;
+            if (_settings.ImageCropSize.Height > 0 && _settings.ImageCropSize.Height < image.Size.Height)
+                imageHeight = _settings.ImageCropSize.Height;
+
+            int imageWidth = image.Size.Width;
+            if (_settings.ImageCropSize.Width > 0 && _settings.ImageCropSize.Width < image.Size.Width)
+                imageWidth = _settings.ImageCropSize.Width;
+
+            int minConsoleHeight = imageHeight + _settings.ConsoleTop;
             if (minConsoleHeight > _settings.ConsoleMaxSize.Height)
                 minConsoleHeight = _settings.ConsoleMaxSize.Height;
             if (Console.WindowHeight < minConsoleHeight)
                 Console.WindowHeight = minConsoleHeight;
 
-            int minConsoleWidth = _settings.ImageCropSize.Width + _settings.ConsoleLeft;
+            int minConsoleWidth = imageWidth + _settings.ConsoleLeft;
             if (minConsoleWidth > _settings.ConsoleMaxSize.Width)
                 minConsoleWidth = _settings.ConsoleMaxSize.Width;
             if (Console.WindowWidth < minConsoleWidth)
