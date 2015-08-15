@@ -6,6 +6,8 @@ namespace ConsoleImage
 {
     public class ConsoleImage
     {
+        // TODO: Simultaneously draw several images, in regions that possibly overlap (with ordering)
+        // TODO: Ability to animate multiple images at once. 
         public static void Draw(Bitmap bitmap, ImageSettings settings = null)
         {
             if (settings == null)
@@ -50,7 +52,7 @@ namespace ConsoleImage
                         shouldBreak = true;
                         break;
                     }
-                    renderer.Draw(image.Size, buffer);
+                    renderer.Draw(buffer);
                 }
             }
 

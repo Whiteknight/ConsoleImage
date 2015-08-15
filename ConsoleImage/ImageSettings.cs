@@ -3,6 +3,7 @@ using System.Drawing;
 
 namespace ConsoleImage
 {
+    // TODO: Change this to an ImageContext class, and put the image inside it.
     public class ImageSettings
     {
         public ImageSettings()
@@ -18,7 +19,7 @@ namespace ConsoleImage
                 Height = Console.LargestWindowHeight
             };
 
-            ImageRegionStart = new Point {
+            ImageCropStart = new Point {
                 X = 0,
                 Y = 0
             };
@@ -26,21 +27,23 @@ namespace ConsoleImage
             TransparencyColor = Console.BackgroundColor;
         }
 
-        // Starting position within the image. 
-        public Point ImageRegionStart { get; set; }
+        // Starting position within the image of the cropped region to take. Defaults to (0, 0) 
+        public Point ImageCropStart { get; set; }
 
         // The size of the area of the image to use. This is cropped from the larger image, and will default to the
-        // total size of the image unless a cropped region is specified
-        public Size ImageCropSize { get; set; }
+        // total size of the image unless a cropped region is specified. If Null, use the whole image
+        public Size? ImageCropSize { get; set; }
 
-        // The upper-left pixel in the console to start rendering
+        // The upper-left pixel in the console to start rendering. Defaults to (0, 0)
         public Point ConsoleStart { get; set; }
 
         // The largest size of the image for rendering. Defaults to the maximum size of the console window
         public Size ImageMaxSize { get; set; }
 
+        // The color to use when the pixel is transparent
         public ConsoleColor TransparencyColor { get; set; }
-        public string SaveResizedImageAs { get; set; }
+
+        //public string SaveResizedImageAs { get; set; }
 
         private IPixelConverter _converter;
         public IPixelConverter Converter {

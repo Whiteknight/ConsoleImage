@@ -6,11 +6,14 @@ namespace ConsoleImage
     public class ImageBuffer
     {
         private readonly ConsolePixel[,] _mBuffer;
+        public Size Size { get; private set; }
 
         public ImageBuffer(Size size)
         {
             if (size.Height <= 0 || size.Width <= 0)
                 throw new Exception("Width and height must be strictly positive");
+
+            Size = size;
 
             _mBuffer = new ConsolePixel[size.Height, size.Width];
         }

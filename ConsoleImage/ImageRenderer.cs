@@ -7,8 +7,8 @@ namespace ConsoleImage
     {
         // TODO: Option to draw border
         // TODO: Option to draw caption in various positions
-        // TODO: Move console resizing logic out of this class. Assume the console is the correct size here, or follow
-        // existing console bounds only.
+        // TODO: Keep a buffer of existing pixels, and only render a pixel if it is different
+        // from what is already visible.
 
         private readonly ImageSettings _settings;
 
@@ -19,108 +19,119 @@ namespace ConsoleImage
 
         public void Draw(Image image)
         {
-            Draw(image.Size, image.CurrentBuffer);
+            Draw(image.CurrentBuffer);
         }
 
         public void Draw(Image image, int bufferIdx)
         {
-            Draw(image.Size, image.GetBuffer(bufferIdx));
+            Draw(image.GetBuffer(bufferIdx));
         }
 
-        public void Draw(Size size, ImageBuffer imageBuffer)
+        public void Draw(ImageBuffer imageBuffer)
         {
-            _settings.RenderStrategy.Render(_settings.ConsoleStart.X, _settings.ConsoleStart.Y, size, imageBuffer);
+            Size imageSize = _settings.ImageCropSize.HasValue ? _settings.ImageCropSize.Value : imageBuffer.Size;
+            _settings.RenderStrategy.Render(_settings.ConsoleStart, _settings.ImageCropStart, imageSize, imageBuffer);
         }
     }
 
     public interface IRenderStrategy
     {
-        void Render(int left, int top, Size size, ImageBuffer imageBuffer);
+        void Render(Point consoleStart, Point imageStart, Size regionSize, ImageBuffer imageBuffer);
     }
 
     public abstract class RenderStrategyBase : IRenderStrategy
     {
-        protected void DrawRow(Size size, ImageBuffer imageBuffer, int rowIdx)
+
+        protected void DrawRow(Point imageStart, Size regionSize, ImageBuffer imageBuffer, int rowIdx)
         {
-            for (int j = 0; j < size.Width; j++)
-            {
-                ConsolePixel p = imageBuffer.GetPixel(j, rowIdx);
-                p.Print();
-            }
+            
         }
 
         #region Implementation of IRenderStrategy
 
-        public abstract void Render(int left, int top, Size size, ImageBuffer imageBuffer);
+        public abstract void Render(Point consoleStart, Point imageStart, Size regionSize, ImageBuffer imageBuffer);
 
         #endregion
     }
 
-    public class InterlacedRenderStrategy : RenderStrategyBase
-    {
-        #region Implementation of IRenderStrategy
+    //public class InterlacedRenderStrategy : RenderStrategyBase
+    //{
+    //    #region Implementation of IRenderStrategy
 
-        public override void Render(int left, int top, Size size, ImageBuffer imageBuffer)
-        {
-            for (int i = 0; i < size.Height; i += 2)
-            {
-                Console.SetCursorPosition(left, top + i);
-                DrawRow(size, imageBuffer, i);
-            }
-            for (int i = 1; i < size.Height; i += 2)
-            {
-                Console.SetCursorPosition(left, top + i);
-                DrawRow(size, imageBuffer, i);
-            }
-        }
+    //    public override void Render(int left, int top, Size size, ImageBuffer imageBuffer)
+    //    {
+    //        for (int i = 0; i < size.Height; i += 2)
+    //        {
+    //            Console.SetCursorPosition(left, top + i);
+    //            DrawRow(size, imageBuffer, i);
+    //        }
+    //        for (int i = 1; i < size.Height; i += 2)
+    //        {
+    //            Console.SetCursorPosition(left, top + i);
+    //            DrawRow(size, imageBuffer, i);
+    //        }
+    //    }
 
-        #endregion
-    }
+    //    #endregion
+    //}
 
     public class ProgressiveRenderStrategy : RenderStrategyBase
     {
         #region Implementation of IRenderStrategy
 
-        public override void Render(int left, int top, Size size, ImageBuffer imageBuffer)
+        public override void Render(Point consoleStart, Point imageStart, Size regionSize, ImageBuffer imageBuffer)
         {
-            for (int i = 0; i < size.Height; i++)
+            int maxY = regionSize.Height;
+            if (maxY >= imageBuffer.Size.Height - imageStart.Y)
+                maxY = imageBuffer.Size.Height - imageStart.Y;
+
+            int maxX = regionSize.Width;
+            if (maxX >= imageBuffer.Size.Width - imageStart.X)
+                maxX = imageBuffer.Size.Width - imageStart.X;
+
+            for (int y = 0; y < maxY; y++)
             {
-                Console.SetCursorPosition(left, top + i);
-                DrawRow(size, imageBuffer, i);
+                Console.SetCursorPosition(consoleStart.X, consoleStart.Y + y);
+
+                for (int x = 0; x < maxX; x++)
+                {
+                    ConsolePixel p = imageBuffer.GetPixel(x + imageStart.X, y + imageStart.Y);
+                    p.Print();
+                }
             }
         }
 
         #endregion
     }
 
-    public class Interlaced2RenderStrategy : RenderStrategyBase
-    {
-        #region Implementation of IRenderStrategy
+    //public class Interlaced2RenderStrategy : RenderStrategyBase
+    //{
+    //    #region Implementation of IRenderStrategy
 
-        public override void Render(int left, int top, Size size, ImageBuffer imageBuffer)
-        {
-            for (int i = 0; i < size.Height; i += 4)
-            {
-                Console.SetCursorPosition(left, top + i);
-                DrawRow(size, imageBuffer, i);
-            }
-            for (int i = 2; i < size.Height; i += 4)
-            {
-                Console.SetCursorPosition(left, top + i);
-                DrawRow(size, imageBuffer, i);
-            }
-            for (int i = 1; i < size.Height; i += 2)
-            {
-                Console.SetCursorPosition(left, top + i);
-                DrawRow(size, imageBuffer, i);
-            }
-            for (int i = 3; i < size.Height; i += 2)
-            {
-                Console.SetCursorPosition(left, top + i);
-                DrawRow(size, imageBuffer, i);
-            }
-        }
+    //    public override void Render(int left, int top, Size size, ImageBuffer imageBuffer)
+    //    {
+    //        for (int i = 0; i < size.Height; i += 4)
+    //        {
+    //            Console.SetCursorPosition(left, top + i);
+    //            DrawRow(size, imageBuffer, i);
+    //        }
+    //        for (int i = 2; i < size.Height; i += 4)
+    //        {
+    //            Console.SetCursorPosition(left, top + i);
+    //            DrawRow(size, imageBuffer, i);
+    //        }
+    //        for (int i = 1; i < size.Height; i += 2)
+    //        {
+    //            Console.SetCursorPosition(left, top + i);
+    //            DrawRow(size, imageBuffer, i);
+    //        }
+    //        for (int i = 3; i < size.Height; i += 2)
+    //        {
+    //            Console.SetCursorPosition(left, top + i);
+    //            DrawRow(size, imageBuffer, i);
+    //        }
+    //    }
 
-        #endregion
-    }
+    //    #endregion
+    //}
 }

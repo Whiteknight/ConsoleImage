@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace ConsoleImage
 {
@@ -15,13 +16,15 @@ namespace ConsoleImage
 
         public void ResizeConsoleWindow(Image image)
         {
+            Size imageSize = _settings.ImageCropSize.HasValue ? _settings.ImageCropSize.Value : image.Size;
+
             int imageHeight = image.Size.Height;
-            if (_settings.ImageCropSize.Height > 0 && _settings.ImageCropSize.Height < image.Size.Height)
-                imageHeight = _settings.ImageCropSize.Height;
+            if (imageSize.Height > 0 && imageSize.Height < image.Size.Height)
+                imageHeight = imageSize.Height;
 
             int imageWidth = image.Size.Width;
-            if (_settings.ImageCropSize.Width > 0 && _settings.ImageCropSize.Width < image.Size.Width)
-                imageWidth = _settings.ImageCropSize.Width;
+            if (imageSize.Width > 0 && imageSize.Width < image.Size.Width)
+                imageWidth = imageSize.Width;
 
             int minConsoleHeight = imageHeight + _settings.ConsoleStart.Y;
             if (minConsoleHeight > _settings.ImageMaxSize.Height)
