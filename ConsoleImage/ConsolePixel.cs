@@ -90,13 +90,35 @@ namespace ConsoleImage
         {
             get { return (byte)(((int) Red + (int) Blue + (int) Green)/3); } 
         }
+
+        // TODO : store these as Color structs
         public byte Red { get; private set; }
         public byte Blue { get; private set; }
         public byte Green { get; private set; }
 
+        public byte RedRounded
+        {
+            get { return (byte)(Red & 0xFC); }
+        }
+
+        public byte BlueRounded
+        {
+            get { return (byte)(Blue & 0xFC); }
+        }
+
+        public byte GreenRounded
+        {
+            get { return (byte)(Green & 0xFC); }
+        }
+
         public int Rgb
         {
-            get { return (Red << 8) | (Green << 4) | Blue; }
+            get { return (Red << 16) | (Green << 8) | Blue; }
+        }
+
+        public int RgbRounded
+        {
+            get { return Rgb & 0x00FCFCFC; }
         }
 
         public int AsInt

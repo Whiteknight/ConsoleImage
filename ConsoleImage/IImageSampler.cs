@@ -11,6 +11,12 @@ namespace ConsoleImage
     {
         public Color GetSampleColor(Size bufferSize, Bitmap bmp, int left, int top)
         {
+            // TODO: Handle transparency. Take the background color from the settings
+            // object and combine together based on transparency.
+            // TODO: sampleSize is not an integer. We need to handle cases where the
+            // ratio is non-integral
+            // TODO: Sample size is constant per image. Calculate this value once per
+            // image and cache it.
             Size sampleSize = new Size
             {
                 Height = bmp.Size.Height / bufferSize.Height,
