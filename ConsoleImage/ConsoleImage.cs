@@ -24,9 +24,9 @@ namespace ConsoleImage
             if (settings.ImageCropStart.HasValue || settings.ImageCropSize.HasValue)
                 image = new ImageRegion(image, settings.ImageCropStart, settings.ImageCropSize);
 
-            ImageRenderer renderer = new ImageRenderer(settings);
-            new ConsoleManager(settings).ResizeConsoleWindow(image);
-            renderer.Draw(image);
+            new ConsoleManager(settings).ResizeConsoleWindow(image.Size);
+            ConsoleRegion region = new ConsoleRegion(settings.ConsoleStart, settings.ImageMaxSize, settings.RenderStrategy);
+            region.Draw(image);
 
             state.ResetConsole();
         }
@@ -45,21 +45,22 @@ namespace ConsoleImage
             if (settings.ImageCropStart.HasValue || settings.ImageCropSize.HasValue)
                 image = new ImageRegion(image, settings.ImageCropStart, settings.ImageCropSize);
 
-            ImageRenderer renderer = new ImageRenderer(settings);
-            new ConsoleManager(settings).ResizeConsoleWindow(image);
+            new ConsoleManager(settings).ResizeConsoleWindow(image.Size);
+            ConsoleRegion region = new ConsoleRegion(settings.ConsoleStart, settings.ImageMaxSize, settings.RenderStrategy);
 
             bool shouldBreak = false;
             while (!shouldBreak)
             {
                 if (image.NumberOfBuffers == 1)
                 {
-                    renderer.Draw(image.CurrentBuffer);
+                    region.Draw(image.CurrentBuffer);
                     while (!shouldStop())
                         Thread.Sleep(200);
                     shouldBreak = true;
                 }
                 else
                 {
+                    // TODO: Timing delay for GIFs when things are moving too fast.
                     foreach (ImageBuffer buffer in image.Buffers)
                     {
                         if (shouldStop())
@@ -67,7 +68,7 @@ namespace ConsoleImage
                             shouldBreak = true;
                             break;
                         }
-                        renderer.Draw(buffer);
+                        region.Draw(buffer);
                     }
                 }
             }

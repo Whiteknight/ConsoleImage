@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace ConsoleImage
 {
@@ -8,6 +10,7 @@ namespace ConsoleImage
         Size Size { get; }
         void SetPixel(int left, int top, ConsolePixel pixel);
         ConsolePixel GetPixel(int left, int top);
+        IEnumerable<ConsolePixel> GetRow(int top);
     }
 
     // TODO: Rearrange this class to be immutable. Remove the SetPixel method and have the constructor
@@ -41,6 +44,12 @@ namespace ConsoleImage
             //    throw new IndexOutOfRangeException();
 
             return _mBuffer[top, left];
+        }
+
+        public IEnumerable<ConsolePixel> GetRow(int top)
+        {
+            for (int i = 0; i < Size.Width; i++)
+                yield return _mBuffer[top, i];
         }
     }
 
@@ -77,6 +86,11 @@ namespace ConsoleImage
             left = left + _start.X;
             top = top + _start.Y;
             return _buffer.GetPixel(left, top);
+        }
+
+        public IEnumerable<ConsolePixel> GetRow(int top)
+        {
+            return _buffer.GetRow(top + _start.Y).Skip(_start.X).Take(_size.Width);
         }
 
         #endregion

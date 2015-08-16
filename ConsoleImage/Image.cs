@@ -133,6 +133,8 @@ namespace ConsoleImage
             // TODO: I don't think this belongs here. Find a more appropriate home
             public Size CalculateImageSize(Bitmap original, Size maxSize, int consoleLeft, int consoleTop)
             {
+                // TODO: Remove consoleLeft and consoleTop. The size of the image buffer to build has nothing
+                // to do with the size of the console where it might be rendered.
                 double ratio = (double)original.Size.Height / (double)original.Size.Width;
                 int width = maxSize.Width - consoleLeft;
                 int height = (int)(width * ratio);
@@ -166,20 +168,7 @@ namespace ConsoleImage
             if (!size.HasValue)
                 _size = new Size(image.Size.Width - _start.X, image.Size.Height - _start.Y);
             else
-            {
-                int width = size.Value.Width;
-                if (width + _start.X > image.Size.Width)
-                    width = image.Size.Width - _start.X;
-
-                int height = size.Value.Height;
-                if (height + _start.Y > image.Size.Height)
-                    height = image.Size.Height - _start.Y;
-
-                if (width <= 0 || height <= 0)
-                    throw new ArgumentException("size is invalid", "size");
-
-                _size = new Size(width, height);
-            }
+                _size = image.Size.BestFitWithin(_start, size.Value);
             // TODO: Check that _start and _size are valid for the image.
         }
 

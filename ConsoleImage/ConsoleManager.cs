@@ -5,6 +5,11 @@ namespace ConsoleImage
 {
     public class ConsoleManager
     {
+        public static Size MaxSize
+        {
+            get { return new Size(Console.LargestWindowWidth, Console.LargestWindowHeight); }
+        }
+
         private readonly ImageSettings _settings;
 
         public ConsoleManager(ImageSettings settings)
@@ -14,16 +19,16 @@ namespace ConsoleImage
 
         // TODO: Move other console-related logic here, like console state save/restore
 
-        public void ResizeConsoleWindow(IImage image)
+        public void ResizeConsoleWindow(Size size)
         {
-            Size imageSize = _settings.ImageCropSize.HasValue ? _settings.ImageCropSize.Value : image.Size;
+            Size imageSize = _settings.ImageCropSize.HasValue ? _settings.ImageCropSize.Value : size;
 
-            int imageHeight = image.Size.Height;
-            if (imageSize.Height > 0 && imageSize.Height < image.Size.Height)
+            int imageHeight = size.Height;
+            if (imageSize.Height > 0 && imageSize.Height < size.Height)
                 imageHeight = imageSize.Height;
 
-            int imageWidth = image.Size.Width;
-            if (imageSize.Width > 0 && imageSize.Width < image.Size.Width)
+            int imageWidth = size.Width;
+            if (imageSize.Width > 0 && imageSize.Width < size.Width)
                 imageWidth = imageSize.Width;
 
             int minConsoleHeight = imageHeight + _settings.ConsoleStart.Y;

@@ -47,6 +47,7 @@
     <Compile Include="ConsoleManager.cs" />
     <Compile Include="ConsolePixel.cs" />
     <Compile Include="ConsolePixelRepository.cs" />
+    <Compile Include="ConsoleRegion.cs" />
     <Compile Include="ConsoleState.cs" />
     <Compile Include="IImageSampler.cs" />
     <Compile Include="Image.cs" />
@@ -56,7 +57,9 @@
     <Compile Include="ImageSettings.cs" />
     <Compile Include="ImageResizer.cs" />
     <Compile Include="IPixelSource.cs" />
+    <Compile Include="IRenderStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SizeExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
