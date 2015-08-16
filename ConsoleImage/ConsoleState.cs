@@ -32,11 +32,29 @@ namespace ConsoleImage
             Console.SetCursorPosition(m_cursorLeft, m_cursorTop);
             Console.OutputEncoding = m_outputEncoding;
         }
-    }
 
-    // TODO: Implement this
-    //public class RestoreOnDisposeConsoleState : IDisposable
-    //{
-        
-    //}
+        public IDisposable AsDisposable()
+        {
+            return new DisposableConsoleState(this);
+        }
+
+        private class DisposableConsoleState : IDisposable
+        {
+            private readonly ConsoleState _state;
+
+            public DisposableConsoleState(ConsoleState state)
+            {
+                _state = state;
+            }
+
+            #region Implementation of IDisposable
+
+            public void Dispose()
+            {
+                _state.ResetConsole();
+            }
+
+            #endregion
+        }
+    }
 }

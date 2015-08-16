@@ -9,6 +9,7 @@ namespace ConsoleImage
     {
         // TODO: Simultaneously draw several images, in regions that possibly overlap (with ordering)
         // TODO: Ability to animate multiple images at once. 
+        // TODO: This class should go away, when the interfaces for the other objects are clean enough
         public static void Draw(Bitmap bitmap, ImageSettings settings = null)
         {
             if (settings == null)
@@ -16,19 +17,19 @@ namespace ConsoleImage
 
             settings.Validate();
 
-            // TODO: using(IDisposable state = ConsoleState.GetRestoreOnDisposeState()) { ... }
-            ConsoleState state = ConsoleState.GetState();
-            Console.OutputEncoding = Encoding.GetEncoding(1252);
+            ConsoleManager manager = new ConsoleManager(settings);
+            using (IDisposable state = manager.SaveConsoleState().AsDisposable())
+            {
+                manager.SetForGraphics();
 
-            IImage image = new Image(bitmap, settings);
-            if (settings.ImageCropStart.HasValue || settings.ImageCropSize.HasValue)
-                image = new ImageRegion(image, settings.ImageCropStart, settings.ImageCropSize);
+                IImage image = new Image(bitmap, settings);
+                if (settings.ImageCropStart.HasValue || settings.ImageCropSize.HasValue)
+                    image = new ImageRegion(image, settings.ImageCropStart, settings.ImageCropSize);
 
-            new ConsoleManager(settings).ResizeConsoleWindow(image.Size);
-            ConsoleRegion region = new ConsoleRegion(settings.ConsoleStart, settings.ImageMaxSize, settings.RenderStrategy);
-            region.Draw(image);
-
-            state.ResetConsole();
+                new ConsoleManager(settings).ResizeConsoleWindow(image.Size);
+                ConsoleRegion region = new ConsoleRegion(settings.ConsoleStart, settings.ImageMaxSize, settings.RenderStrategy);
+                region.Draw(image);
+            }
         }
 
         public static void DrawAnimate(Bitmap bitmap, Func<bool> shouldStop, ImageSettings settings = null)
@@ -38,42 +39,43 @@ namespace ConsoleImage
 
             settings.Validate();
 
-            ConsoleState state = ConsoleState.GetState();
-            Console.OutputEncoding = Encoding.GetEncoding(1252);
-
-            IImage image = new Image(bitmap, settings);
-            if (settings.ImageCropStart.HasValue || settings.ImageCropSize.HasValue)
-                image = new ImageRegion(image, settings.ImageCropStart, settings.ImageCropSize);
-
-            new ConsoleManager(settings).ResizeConsoleWindow(image.Size);
-            ConsoleRegion region = new ConsoleRegion(settings.ConsoleStart, settings.ImageMaxSize, settings.RenderStrategy);
-
-            bool shouldBreak = false;
-            while (!shouldBreak)
+            ConsoleManager manager = new ConsoleManager(settings);
+            using (IDisposable state = manager.SaveConsoleState().AsDisposable())
             {
-                if (image.NumberOfBuffers == 1)
+                manager.SetForGraphics();
+
+                IImage image = new Image(bitmap, settings);
+                if (settings.ImageCropStart.HasValue || settings.ImageCropSize.HasValue)
+                    image = new ImageRegion(image, settings.ImageCropStart, settings.ImageCropSize);
+
+                new ConsoleManager(settings).ResizeConsoleWindow(image.Size);
+                ConsoleRegion region = new ConsoleRegion(settings.ConsoleStart, settings.ImageMaxSize, settings.RenderStrategy);
+
+                bool shouldBreak = false;
+                while (!shouldBreak)
                 {
-                    region.Draw(image.CurrentBuffer);
-                    while (!shouldStop())
-                        Thread.Sleep(200);
-                    shouldBreak = true;
-                }
-                else
-                {
-                    // TODO: Timing delay for GIFs when things are moving too fast.
-                    foreach (ImageBuffer buffer in image.Buffers)
+                    if (image.NumberOfBuffers == 1)
                     {
-                        if (shouldStop())
+                        region.Draw(image.CurrentBuffer);
+                        while (!shouldStop())
+                            Thread.Sleep(200);
+                        shouldBreak = true;
+                    }
+                    else
+                    {
+                        // TODO: Timing delay for GIFs when things are moving too fast.
+                        foreach (ImageBuffer buffer in image.Buffers)
                         {
-                            shouldBreak = true;
-                            break;
+                            if (shouldStop())
+                            {
+                                shouldBreak = true;
+                                break;
+                            }
+                            region.Draw(buffer);
                         }
-                        region.Draw(buffer);
                     }
                 }
             }
-
-            state.ResetConsole();
         }
     }
 }

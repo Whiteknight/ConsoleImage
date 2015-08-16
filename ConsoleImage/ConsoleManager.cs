@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Text;
 
 namespace ConsoleImage
 {
@@ -15,6 +16,16 @@ namespace ConsoleImage
         public ConsoleManager(ImageSettings settings)
         {
             _settings = settings;
+        }
+
+        public ConsoleState SaveConsoleState()
+        {
+            return ConsoleState.GetState();
+        }
+
+        public void SetForGraphics()
+        {
+            Console.OutputEncoding = Encoding.GetEncoding(1252);
         }
 
         // TODO: Move other console-related logic here, like console state save/restore
