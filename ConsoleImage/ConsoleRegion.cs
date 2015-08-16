@@ -85,7 +85,9 @@ namespace ConsoleImage
 
         public void Draw(IImageBuffer imageBuffer)
         {
-            imageBuffer = new ImageBufferRegion(imageBuffer, new Point(0, 0), _size);
+            Point start = new Point(0, 0);
+            Size size = imageBuffer.Size.BestFitWithin(start, _size);
+            imageBuffer = new ImageBufferRegion(imageBuffer, start, size);
             _renderStrategy.Render(this, imageBuffer);
         }
     }
