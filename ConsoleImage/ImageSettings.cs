@@ -4,6 +4,7 @@ using System.Drawing;
 namespace ConsoleImage
 {
     // TODO: Change this to an ImageContext class, and put the image inside it.
+    // TODO: separate console settings and global settings from image settings
     public class ImageSettings
     {
         public ImageSettings()
@@ -19,16 +20,11 @@ namespace ConsoleImage
                 Height = Console.LargestWindowHeight
             };
 
-            ImageCropStart = new Point {
-                X = 0,
-                Y = 0
-            };
-
             TransparencyColor = Console.BackgroundColor;
         }
 
         // Starting position within the image of the cropped region to take. Defaults to (0, 0) 
-        public Point ImageCropStart { get; set; }
+        public Point? ImageCropStart { get; set; }
 
         // The size of the area of the image to use. This is cropped from the larger image, and will default to the
         // total size of the image unless a cropped region is specified. If Null, use the whole image

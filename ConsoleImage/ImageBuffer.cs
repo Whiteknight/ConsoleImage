@@ -3,7 +3,16 @@ using System.Drawing;
 
 namespace ConsoleImage
 {
-    public class ImageBuffer
+    public interface IImageBuffer
+    {
+        Size Size { get; }
+        void SetPixel(int left, int top, ConsolePixel pixel);
+        ConsolePixel GetPixel(int left, int top);
+    }
+
+    // TODO: Rearrange this class to be immutable. Remove the SetPixel method and have the constructor
+    // take the raw buffer array instead. Use ImageBuilder.
+    public class ImageBuffer : IImageBuffer
     {
         private readonly ConsolePixel[,] _mBuffer;
         public Size Size { get; private set; }
@@ -33,5 +42,43 @@ namespace ConsoleImage
 
             return _mBuffer[top, left];
         }
+    }
+
+    public class ImageBufferRegion : IImageBuffer
+    {
+        private readonly IImageBuffer _buffer;
+        private readonly Point _start;
+        private readonly Size _size;
+
+        public ImageBufferRegion(IImageBuffer buffer, Point start, Size size)
+        {
+            _buffer = buffer;
+            _start = start;
+            _size = size;
+
+            // TODO: Validate _start and _size
+        }
+
+        #region Implementation of IImageBuffer
+
+        public Size Size { get { return _size; } }
+        public void SetPixel(int left, int top, ConsolePixel pixel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ConsolePixel GetPixel(int left, int top)
+        {
+            if (left >= _size.Width || left < 0)
+                throw new ArgumentOutOfRangeException("left");
+            if (top >= _size.Height || top < 0)
+                throw new ArgumentOutOfRangeException("top");
+
+            left = left + _start.X;
+            top = top + _start.Y;
+            return _buffer.GetPixel(left, top);
+        }
+
+        #endregion
     }
 }

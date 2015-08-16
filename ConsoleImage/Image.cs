@@ -3,10 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 
 namespace ConsoleImage
 {
-    public class Image
+    // TODO: create a subclass that represents a projection of a cropped region in an image.
+    public interface IImage
+    {
+        Size Size { get; }
+        IEnumerable<IImageBuffer> Buffers { get; }
+        IImageBuffer CurrentBuffer { get; }
+        int NumberOfBuffers { get; }
+        void SetCurrentBuffer(int bufferIdx);
+        IImageBuffer GetBuffer(int bufferIdx);
+    }
+
+    public class Image : IImage
     {
         private readonly ImageBufferSet _buffers;
         private int _currentBuffer;
@@ -22,12 +34,12 @@ namespace ConsoleImage
             get { return _buffers.Size; }
         }
 
-        public IEnumerable<ImageBuffer> Buffers
+        public IEnumerable<IImageBuffer> Buffers
         {
             get { return _buffers; }
         }
 
-        public ImageBuffer CurrentBuffer
+        public IImageBuffer CurrentBuffer
         {
             get { return _buffers.GetBuffer(_currentBuffer); }
         }
@@ -45,22 +57,17 @@ namespace ConsoleImage
             _currentBuffer = bufferIdx;
         }
 
-        public ImageBuffer GetBuffer(int bufferIdx)
+        public IImageBuffer GetBuffer(int bufferIdx)
         {
             return _buffers.GetBuffer(bufferIdx);
         }
 
-        public void SetNumberOfBuffers(int numberOfBuffers)
-        {
-            _buffers.SetNumberOfBuffers(numberOfBuffers);
-        }
-
-        public class ImageBufferSet : IEnumerable<ImageBuffer>
+        public class ImageBufferSet : IEnumerable<IImageBuffer>
         {
             private readonly Size _size;
             private readonly Bitmap _bmp;
             private readonly ImageSettings _settings;
-            private readonly List<ImageBuffer> _buffers;
+            private readonly List<IImageBuffer> _buffers;
             private readonly FrameDimension _frameDimension;
             private readonly int _frameCount;
 
@@ -71,7 +78,7 @@ namespace ConsoleImage
 
                 _frameDimension = new FrameDimension(bmp.FrameDimensionsList[0]);
                 _frameCount = bmp.GetFrameCount(_frameDimension);
-                _buffers = new List<ImageBuffer>(_frameCount);
+                _buffers = new List<IImageBuffer>(_frameCount);
                 _bmp = bmp;
             }
 
@@ -80,7 +87,7 @@ namespace ConsoleImage
                 get { return _size; }
             }
 
-            public IEnumerator<ImageBuffer> GetEnumerator()
+            public IEnumerator<IImageBuffer> GetEnumerator()
             {
                 for (int i = 0; i < _frameCount; i++)
                     yield return GetBuffer(i);
@@ -91,12 +98,12 @@ namespace ConsoleImage
                 return GetEnumerator();
             }
 
-            public ImageBuffer GetBuffer(int bufferIdx)
+            public IImageBuffer GetBuffer(int bufferIdx)
             {
                 if (bufferIdx < 0 || bufferIdx >= _frameCount)
                     throw new IndexOutOfRangeException("The buffer index is out of bounds");
 
-                ImageBuffer buffer = (bufferIdx < _buffers.Count) ? _buffers[bufferIdx] : null;
+                IImageBuffer buffer = (bufferIdx < _buffers.Count) ? _buffers[bufferIdx] : null;
                 if (buffer == null)
                 {
                     buffer = new ImageBuffer(_size);
@@ -123,25 +130,6 @@ namespace ConsoleImage
                 get { return _frameCount; }
             }
 
-            public void SetNumberOfBuffers(int numberOfBuffers)
-            {
-                if (numberOfBuffers < 1)
-                    throw new IndexOutOfRangeException("The number of buffers must be at least 1");
-
-                if (numberOfBuffers < _buffers.Count)
-                {
-                    _buffers.RemoveRange(numberOfBuffers, _buffers.Count - numberOfBuffers);
-                }
-
-                if (numberOfBuffers > _buffers.Count)
-                {
-                    for (int i = _buffers.Count; i < numberOfBuffers; i++)
-                    {
-                        _buffers.Add(null);
-                    }
-                }
-            }
-
             // TODO: I don't think this belongs here. Find a more appropriate home
             public Size CalculateImageSize(Bitmap original, Size maxSize, int consoleLeft, int consoleTop)
             {
@@ -163,5 +151,61 @@ namespace ConsoleImage
                 return new Size(width, height);
             }
         }
+    }
+
+    public class ImageRegion : IImage
+    {
+        private readonly IImage _image;
+        private readonly Point _start;
+        private readonly Size _size;
+
+        public ImageRegion(IImage image, Point? start, Size? size)
+        {
+            _image = image;
+            _start = start.HasValue ? start.Value : new Point(0, 0);
+            if (!size.HasValue)
+                _size = new Size(image.Size.Width - _start.X, image.Size.Height - _start.Y);
+            else
+            {
+                int width = size.Value.Width;
+                if (width + _start.X > image.Size.Width)
+                    width = image.Size.Width - _start.X;
+
+                int height = size.Value.Height;
+                if (height + _start.Y > image.Size.Height)
+                    height = image.Size.Height - _start.Y;
+
+                if (width <= 0 || height <= 0)
+                    throw new ArgumentException("size is invalid", "size");
+
+                _size = new Size(width, height);
+            }
+            // TODO: Check that _start and _size are valid for the image.
+        }
+
+        private IImageBuffer WrapBuffer(IImageBuffer buffer)
+        {
+            if (buffer == null)
+                return null;
+            return new ImageBufferRegion(buffer, _start, _size);
+        }
+
+        #region Implementation of IImage
+
+        public Size Size { get { return _size; } }
+        public IEnumerable<IImageBuffer> Buffers { get { return _image.Buffers.Select(WrapBuffer); } }
+        public IImageBuffer CurrentBuffer { get { return WrapBuffer(_image.CurrentBuffer); } }
+        public int NumberOfBuffers { get { return _image.NumberOfBuffers; } }
+        public void SetCurrentBuffer(int bufferIdx)
+        {
+            _image.SetCurrentBuffer(bufferIdx);
+        }
+
+        public IImageBuffer GetBuffer(int bufferIdx)
+        {
+            return WrapBuffer(_image.GetBuffer(bufferIdx));
+        }
+
+        #endregion
     }
 }

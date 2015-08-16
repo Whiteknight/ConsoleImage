@@ -9,6 +9,9 @@ namespace ConsoleImage
         // TODO: Option to draw caption in various positions
         // TODO: Keep a buffer of existing pixels, and only render a pixel if it is different
         // from what is already visible.
+        // TODO: Create a ConsoleRegion class which represents the drawable region of the console
+        // and offload drawing/positioning logic to that. ImageRenderer takes an image and a
+        // ConsoleRegion to render the image to.
 
         private readonly ImageSettings _settings;
 
@@ -17,60 +20,46 @@ namespace ConsoleImage
             _settings = settings;
         }
 
-        public void Draw(Image image)
+        public void Draw(IImage image)
         {
             Draw(image.CurrentBuffer);
         }
 
-        public void Draw(Image image, int bufferIdx)
+        public void Draw(IImage image, int bufferIdx)
         {
             Draw(image.GetBuffer(bufferIdx));
         }
 
-        public void Draw(ImageBuffer imageBuffer)
+        public void Draw(IImageBuffer imageBuffer)
         {
-            Size imageSize = _settings.ImageCropSize.HasValue ? _settings.ImageCropSize.Value : imageBuffer.Size;
-            _settings.RenderStrategy.Render(_settings.ConsoleStart, _settings.ImageCropStart, imageSize, imageBuffer);
+            _settings.RenderStrategy.Render(_settings.ConsoleStart, imageBuffer);
         }
     }
 
     public interface IRenderStrategy
     {
-        void Render(Point consoleStart, Point imageStart, Size regionSize, ImageBuffer imageBuffer);
+        void Render(Point consoleStart, IImageBuffer imageBuffer);
     }
 
     public abstract class RenderStrategyBase : IRenderStrategy
     {
         #region Implementation of IRenderStrategy
 
-        public void Render(Point consoleStart, Point imageStart, Size regionSize, ImageBuffer imageBuffer)
+        public void Render(Point consoleStart, IImageBuffer imageBuffer)
         {
-            int maxY = regionSize.Height;
-            if (maxY >= imageBuffer.Size.Height - imageStart.Y)
-                maxY = imageBuffer.Size.Height - imageStart.Y;
-
-            int maxX = regionSize.Width;
-            if (maxX >= imageBuffer.Size.Width - imageStart.X)
-                maxX = imageBuffer.Size.Width - imageStart.X;
-
-            Size maxSize = new Size {
-                Height = maxY,
-                Width = maxX
-            };
-
-            RenderInternal(consoleStart, imageStart, maxSize, imageBuffer);
+            RenderInternal(consoleStart, imageBuffer);
         }
 
         #endregion
 
-        protected abstract void RenderInternal(Point consoleStart, Point imageStart, Size regionSize, ImageBuffer imageBuffer);
+        protected abstract void RenderInternal(Point consoleStart, IImageBuffer imageBuffer);
 
-        protected void RenderRow(Point consoleStart, Point imageStart, Size regionSize, ImageBuffer imageBuffer, int y)
+        protected void RenderRow(Point consoleStart, IImageBuffer imageBuffer, int y)
         {
             Console.SetCursorPosition(consoleStart.X, consoleStart.Y + y);
 
-            for (int x = 0; x < regionSize.Width; x++)
-                imageBuffer.GetPixel(x + imageStart.X, y + imageStart.Y).Print();
+            for (int x = 0; x < imageBuffer.Size.Width; x++)
+                imageBuffer.GetPixel(x, y).Print();
         }
     }
 
@@ -78,15 +67,15 @@ namespace ConsoleImage
     {
         #region Implementation of IRenderStrategy
 
-        protected override void RenderInternal(Point consoleStart, Point imageStart, Size regionSize, ImageBuffer imageBuffer)
+        protected override void RenderInternal(Point consoleStart, IImageBuffer imageBuffer)
         {
-            for (int y = 0; y < regionSize.Height; y += 2)
+            for (int y = 0; y < imageBuffer.Size.Height; y += 2)
             {
-                RenderRow(consoleStart, imageStart, regionSize, imageBuffer, y);
+                RenderRow(consoleStart, imageBuffer, y);
             }
-            for (int y = 1; y < regionSize.Height; y += 2)
+            for (int y = 1; y < imageBuffer.Size.Height; y += 2)
             {
-                RenderRow(consoleStart, imageStart, regionSize, imageBuffer, y);
+                RenderRow(consoleStart, imageBuffer, y);
             }
         }
 
@@ -97,11 +86,11 @@ namespace ConsoleImage
     {
         #region Implementation of IRenderStrategy
 
-        protected override void RenderInternal(Point consoleStart, Point imageStart, Size regionSize, ImageBuffer imageBuffer)
+        protected override void RenderInternal(Point consoleStart, IImageBuffer imageBuffer)
         {
-            for (int y = 0; y < regionSize.Height; y++)
+            for (int y = 0; y < imageBuffer.Size.Height; y++)
             {
-                RenderRow(consoleStart, imageStart, regionSize, imageBuffer, y);
+                RenderRow(consoleStart, imageBuffer, y);
             }
         }
 
@@ -112,23 +101,23 @@ namespace ConsoleImage
     {
         #region Implementation of IRenderStrategy
 
-        protected override void RenderInternal(Point consoleStart, Point imageStart, Size regionSize, ImageBuffer imageBuffer)
+        protected override void RenderInternal(Point consoleStart, IImageBuffer imageBuffer)
         {
-            for (int y = 0; y < regionSize.Height; y += 4)
+            for (int y = 0; y < imageBuffer.Size.Height; y += 4)
             {
-                RenderRow(consoleStart, imageStart, regionSize, imageBuffer, y);
+                RenderRow(consoleStart, imageBuffer, y);
             }
-            for (int y = 2; y < regionSize.Height; y += 4)
+            for (int y = 2; y < imageBuffer.Size.Height; y += 4)
             {
-                RenderRow(consoleStart, imageStart, regionSize, imageBuffer, y);
+                RenderRow(consoleStart, imageBuffer, y);
             }
-            for (int y = 1; y < regionSize.Height; y += 4)
+            for (int y = 1; y < imageBuffer.Size.Height; y += 4)
             {
-                RenderRow(consoleStart, imageStart, regionSize, imageBuffer, y);
+                RenderRow(consoleStart, imageBuffer, y);
             }
-            for (int y = 3; y < regionSize.Height; y += 4)
+            for (int y = 3; y < imageBuffer.Size.Height; y += 4)
             {
-                RenderRow(consoleStart, imageStart, regionSize, imageBuffer, y);
+                RenderRow(consoleStart, imageBuffer, y);
             }
         }
 

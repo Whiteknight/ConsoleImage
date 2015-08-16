@@ -14,7 +14,7 @@ namespace ConsoleImage
 
         // TODO: Move other console-related logic here, like console state save/restore
 
-        public void ResizeConsoleWindow(Image image)
+        public void ResizeConsoleWindow(IImage image)
         {
             Size imageSize = _settings.ImageCropSize.HasValue ? _settings.ImageCropSize.Value : image.Size;
 

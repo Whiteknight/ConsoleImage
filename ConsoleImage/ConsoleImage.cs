@@ -20,7 +20,10 @@ namespace ConsoleImage
             ConsoleState state = ConsoleState.GetState();
             Console.OutputEncoding = Encoding.GetEncoding(1252);
 
-            Image image = new Image(bitmap, settings);
+            IImage image = new Image(bitmap, settings);
+            if (settings.ImageCropStart.HasValue || settings.ImageCropSize.HasValue)
+                image = new ImageRegion(image, settings.ImageCropStart, settings.ImageCropSize);
+
             ImageRenderer renderer = new ImageRenderer(settings);
             new ConsoleManager(settings).ResizeConsoleWindow(image);
             renderer.Draw(image);
@@ -38,7 +41,9 @@ namespace ConsoleImage
             ConsoleState state = ConsoleState.GetState();
             Console.OutputEncoding = Encoding.GetEncoding(1252);
 
-            Image image = new Image(bitmap, settings);
+            IImage image = new Image(bitmap, settings);
+            if (settings.ImageCropStart.HasValue || settings.ImageCropSize.HasValue)
+                image = new ImageRegion(image, settings.ImageCropStart, settings.ImageCropSize);
 
             ImageRenderer renderer = new ImageRenderer(settings);
             new ConsoleManager(settings).ResizeConsoleWindow(image);
