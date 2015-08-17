@@ -9,7 +9,7 @@ namespace ConsoleImage
     public class ConsoleRegion
     {
         private readonly IRenderStrategy _renderStrategy;
-        private readonly Point _start;
+        private Point _start;
         private readonly Size _size;
 
         public static ConsoleRegion WholeWindow(IRenderStrategy renderStrategy = null)
@@ -76,6 +76,12 @@ namespace ConsoleImage
             SetCursorPosition(0, top);
             foreach (ConsolePixel pixel in pixels.Take(_size.Width))
                 pixel.Print();
+        }
+
+        public void MoveTo(Point p)
+        {
+            Console.MoveBufferArea(_start.X, _start.Y, _size.Width, _size.Height, p.X, p.Y);
+            _start = p;
         }
 
         public void Draw(IImageBuffer imageBuffer)

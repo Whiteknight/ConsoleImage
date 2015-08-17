@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Text;
 
 namespace ConsoleImage.Viewer
 {
@@ -23,10 +24,11 @@ namespace ConsoleImage.Viewer
                 //    Y = 10
                 //},
 
-                //ImageCropSize = new Size {
-                //    Height = 500,
-                //    Width = 400
-                //},
+                ImageCropSize = new Size
+                {
+                    Height = 500,
+                    Width = 400
+                },
 
                 //ConsoleStart = new Point
                 //{
@@ -38,9 +40,31 @@ namespace ConsoleImage.Viewer
                 TransparencyColor = ConsoleColor.White,
                 RenderStrategy = new ProgressiveRenderStrategy()
             };
-            Bitmap original = (Bitmap)System.Drawing.Image.FromFile(args[0]);
 
-            ConsoleImage.DrawAnimate(original, () => Console.KeyAvailable, settings);
+            Bitmap bitmap = (Bitmap)System.Drawing.Image.FromFile(args[0]);
+
+            //ConsoleImage.DrawAnimate(original, () => Console.KeyAvailable, settings);
+
+            settings.Validate();
+
+            ConsoleManager manager = new ConsoleManager(settings);
+            using (IDisposable state = manager.SaveConsoleState().AsDisposable())
+            {
+                manager.SetForGraphics();
+                //manager.ResizeConsoleWindow(image.Size);
+
+                ImageBuilder builder = new ImageBuilder(settings.Sampler, settings.Converter, settings.TransparencyColor.ToColor());
+                IImage image = builder.Build(bitmap, ConsoleManager.MaxSize);
+                if (settings.ImageCropStart.HasValue || settings.ImageCropSize.HasValue)
+                    image = new ImageRegion(image, settings.ImageCropStart, settings.ImageCropSize);
+
+
+                ConsoleRegion region = new ConsoleRegion(ConsoleManager.Origin, new Size(36, 36), new ProgressiveRenderStrategy());
+                region.Draw(image.GetBuffer(0));
+
+                Console.ReadKey();
+                region.MoveTo(new Point(36, 36));
+            }
 
             Console.ReadKey();
         }
