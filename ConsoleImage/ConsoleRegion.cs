@@ -17,7 +17,7 @@ namespace ConsoleImage
             return new ConsoleRegion(new Point(0, 0), ConsoleManager.MaxSize, renderStrategy);
         }
 
-        public ConsoleRegion(Point? start, Size? size, IRenderStrategy renderStrategy)
+        public ConsoleRegion(Point? start, Size? size, IRenderStrategy renderStrategy = null)
         {
             _renderStrategy = renderStrategy ?? new ProgressiveRenderStrategy();
             _start = start.HasValue ? start.Value : new Point(0, 0);
@@ -84,11 +84,11 @@ namespace ConsoleImage
             _start = p;
         }
 
-        public void Draw(IImageBuffer imageBuffer)
+        public void Draw(IImageBuffer imageBuffer, Point? start = null)
         {
-            Point start = new Point(0, 0);
-            Size size = imageBuffer.Size.BestFitWithin(start, _size);
-            imageBuffer = new ImageBufferRegion(imageBuffer, start, size);
+            Point p = start.HasValue ? start.Value : new Point(0, 0);
+            Size size = imageBuffer.Size.BestFitWithin(p, _size);
+            imageBuffer = new ImageBufferRegion(imageBuffer, p, size);
             _renderStrategy.Render(this, imageBuffer);
         }
     }

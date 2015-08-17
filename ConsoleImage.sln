@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleImage.Scales", "Cons
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleImage.Viewer", "ConsoleImage.Viewer\ConsoleImage.Viewer.csproj", "{ACEB5F46-E310-4DF6-A690-C4F212624249}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleImage.SlidingPuzzle", "ConsoleImage.SlidingPuzzle\ConsoleImage.SlidingPuzzle.csproj", "{923F57F4-EF45-4B4B-B8E3-FE70775F4358}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{ACEB5F46-E310-4DF6-A690-C4F212624249}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACEB5F46-E310-4DF6-A690-C4F212624249}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACEB5F46-E310-4DF6-A690-C4F212624249}.Release|Any CPU.Build.0 = Release|Any CPU
+		{923F57F4-EF45-4B4B-B8E3-FE70775F4358}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{923F57F4-EF45-4B4B-B8E3-FE70775F4358}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{923F57F4-EF45-4B4B-B8E3-FE70775F4358}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{923F57F4-EF45-4B4B-B8E3-FE70775F4358}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -41,6 +41,7 @@ namespace ConsoleImage
         public void SetForGraphics()
         {
             Console.OutputEncoding = Encoding.GetEncoding(1252);
+            Console.CursorVisible = false;
         }
 
         public void ResizeConsoleWindow(Size size, bool allowShrink = false)
