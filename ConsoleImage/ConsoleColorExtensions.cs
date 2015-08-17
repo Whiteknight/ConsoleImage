@@ -71,7 +71,7 @@ namespace ConsoleImage
         //    { ConsoleColor.Yellow, Color.Yellow}
         //};
 
-        public static Color GetColor(this ConsoleColor cc)
+        public static Color ToColor(this ConsoleColor cc)
         {
             return _colorLookup[cc];
         }

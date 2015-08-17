@@ -24,8 +24,8 @@ namespace ConsoleImage
 
             _percent = _percents.ContainsKey(printableCharacter) ? _percents[printableCharacter] : (byte)0;
 
-            Color color1 = backgroundColor.GetColor();
-            Color color2 = foregroundColor.GetColor(); ;
+            Color color1 = backgroundColor.ToColor();
+            Color color2 = foregroundColor.ToColor(); ;
 
             Color = color1.Blend(color2, (double)_percent);
         }        

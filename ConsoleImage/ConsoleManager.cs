@@ -11,6 +11,21 @@ namespace ConsoleImage
             get { return new Size(Console.LargestWindowWidth, Console.LargestWindowHeight); }
         }
 
+        public static Size CurrentSize
+        {
+            get { return new Size(Console.WindowWidth, Console.WindowHeight); }
+        }
+
+        public static Size MaxVerticalSize
+        {
+            get { return new Size(Console.WindowWidth, Console.LargestWindowHeight); }
+        }
+
+        public static Point Origin
+        {
+            get { return new Point(0, 0); }
+        }
+
         private readonly ImageSettings _settings;
 
         public ConsoleManager(ImageSettings settings)
@@ -28,31 +43,15 @@ namespace ConsoleImage
             Console.OutputEncoding = Encoding.GetEncoding(1252);
         }
 
-        // TODO: Move other console-related logic here, like console state save/restore
-
-        public void ResizeConsoleWindow(Size size)
+        public void ResizeConsoleWindow(Size size, bool allowShrink = false)
         {
-            Size imageSize = _settings.ImageCropSize.HasValue ? _settings.ImageCropSize.Value : size;
+            size = MaxSize.BestFitWithin(Origin, size);
 
-            int imageHeight = size.Height;
-            if (imageSize.Height > 0 && imageSize.Height < size.Height)
-                imageHeight = imageSize.Height;
+            if (Console.WindowHeight < size.Height || (allowShrink && Console.WindowHeight > size.Height))
+                Console.WindowHeight = size.Height;
 
-            int imageWidth = size.Width;
-            if (imageSize.Width > 0 && imageSize.Width < size.Width)
-                imageWidth = imageSize.Width;
-
-            int minConsoleHeight = imageHeight + _settings.ConsoleStart.Y;
-            if (minConsoleHeight > _settings.ImageMaxSize.Height)
-                minConsoleHeight = _settings.ImageMaxSize.Height;
-            if (Console.WindowHeight < minConsoleHeight)
-                Console.WindowHeight = minConsoleHeight;
-
-            int minConsoleWidth = imageWidth + _settings.ConsoleStart.X;
-            if (minConsoleWidth > _settings.ImageMaxSize.Width)
-                minConsoleWidth = _settings.ImageMaxSize.Width;
-            if (Console.WindowWidth < minConsoleWidth)
-                Console.WindowWidth = minConsoleWidth;
+            if (Console.WindowWidth < size.Width || (allowShrink && Console.WindowWidth > size.Width))
+                Console.WindowWidth = size.Width;                
         }
     }
 }

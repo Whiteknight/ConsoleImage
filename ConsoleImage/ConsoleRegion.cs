@@ -78,11 +78,6 @@ namespace ConsoleImage
                 pixel.Print();
         }
 
-        public void Draw(IImage image)
-        {
-            Draw(image.CurrentBuffer);
-        }
-
         public void Draw(IImageBuffer imageBuffer)
         {
             Point start = new Point(0, 0);
