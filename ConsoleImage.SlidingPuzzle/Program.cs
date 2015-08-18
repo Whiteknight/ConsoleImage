@@ -76,6 +76,8 @@ namespace ConsoleImage.SlidingPuzzle
                     }
                 }
 
+                // TODO: Randomize the blocks, to start.
+
                 regions[3, 3] = null;
 
                 Point emptySpace = new Point(3, 3);
@@ -87,12 +89,10 @@ namespace ConsoleImage.SlidingPuzzle
                         break;
                     if (key.Key == ConsoleKey.UpArrow || key.Key == ConsoleKey.DownArrow || key.Key == ConsoleKey.LeftArrow || key.Key == ConsoleKey.RightArrow)
                         emptySpace = MoveRegion(regions, emptySpace, key.Key);
+
+                    // TODO: Check win condition
                 }
             }
-
-
-
-            Console.ReadKey();
         }
 
         private static Point MoveRegion(ConsoleRegion[,] regions, Point emptySpace, ConsoleKey key)
