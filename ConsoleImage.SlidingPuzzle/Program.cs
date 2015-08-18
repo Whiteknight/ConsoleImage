@@ -9,7 +9,7 @@ namespace ConsoleImage.SlidingPuzzle
 {
     class Program
     {
-        const int BlockSize = 18;
+        const int BlockSize = 13;
 
         static void Main(string[] args)
         {
@@ -50,7 +50,7 @@ namespace ConsoleImage.SlidingPuzzle
 
             
 
-            Size gameSize = new Size(BlockSize * 3, BlockSize * 3);
+            Size gameSize = new Size(BlockSize * 4, BlockSize * 4);
 
             ConsoleManager manager = new ConsoleManager(settings);
             using (IDisposable state = manager.SaveConsoleState().AsDisposable())
@@ -61,12 +61,12 @@ namespace ConsoleImage.SlidingPuzzle
                 ImageBuilder builder = new ImageBuilder(settings.Sampler, settings.Converter, settings.TransparencyColor.ToColor());
                 IImage image = builder.Build(bitmap, gameSize);
 
-                ConsoleRegion[,] regions = new ConsoleRegion[3,3];
-                for (int i = 0; i < 3; i++)
+                ConsoleRegion[,] regions = new ConsoleRegion[4,4];
+                for (int i = 0; i < 4; i++)
                 {
-                    for (int j = 0; j < 3; j++)
+                    for (int j = 0; j < 4; j++)
                     {
-                        if (i == 2 && j == 2)
+                        if (i == 3 && j == 3)
                             continue;
 
                         Point p = new Point(i * BlockSize, j * BlockSize);
@@ -76,9 +76,9 @@ namespace ConsoleImage.SlidingPuzzle
                     }
                 }
 
-                regions[2, 2] = null;
+                regions[3, 3] = null;
 
-                Point emptySpace = new Point(2, 2);
+                Point emptySpace = new Point(3, 3);
 
                 while (true)
                 {
@@ -117,7 +117,7 @@ namespace ConsoleImage.SlidingPuzzle
                     return emptySpace;
             }
 
-            if (target.X < 0 || target.X > 2 || target.Y < 0 || target.Y > 2)
+            if (target.X < 0 || target.X > 3 || target.Y < 0 || target.Y > 3)
                 return emptySpace;
 
             regions[emptySpace.X, emptySpace.Y] = regions[target.X, target.Y];
