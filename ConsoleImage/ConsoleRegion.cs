@@ -10,6 +10,8 @@ namespace ConsoleImage
     {
         private readonly IRenderStrategy _renderStrategy;
         private Point _start;
+        // TODO: Separate out the total _size of the region from the effective usable _size.
+        // This way we can create decorator/wrapper types to add things like titles and borders.
         private readonly Size _size;
 
         public static ConsoleRegion WholeWindow(IRenderStrategy renderStrategy = null)
@@ -55,8 +57,19 @@ namespace ConsoleImage
             Console.SetCursorPosition(x + _start.X, y + _start.Y);
         }
 
+        // TODO: Move string write/print methods to a wrapper type that does text only
+        // TODO: Make text scrollable, by adding lines of text to the bottom and scrolling
+        // everything else up.
         public void Write(string fmt, params object[] args)
         {
+            Write(ColorScheme.Default, fmt, args);
+        }
+
+        public void Write(ColorScheme scheme, string fmt, params object[] args)
+        {
+            ColorScheme saved = ColorScheme.Get();
+            scheme.Set();
+
             string s = string.Format(fmt, args);
             SetCursorPosition(new Point(0, 0));
             List<string> chunks = SplitStringToChunks(s, _size.Width)
@@ -67,8 +80,11 @@ namespace ConsoleImage
                 SetCursorPosition(0, i);
                 Console.Write(chunks[i]);
             }
+
+            saved.Set();
         }
 
+        // TODO: Move drawing methods to a wrapper type that handles graphics only
         public void DrawRow(int top, IEnumerable<ConsolePixel> pixels)
         {
             if (top >= _size.Height)
@@ -90,6 +106,26 @@ namespace ConsoleImage
             Size size = imageBuffer.Size.BestFitWithin(p, _size);
             imageBuffer = new ImageBufferRegion(imageBuffer, p, size);
             _renderStrategy.Render(this, imageBuffer);
+        }
+
+        public void Clear()
+        {
+            Clear(ColorScheme.Default);
+        }
+
+        public void Clear(ColorScheme scheme)
+        {
+            ColorScheme saved = ColorScheme.Get();
+            scheme.Set();
+
+            string s = new string(' ', _size.Width);
+            for (int i = 0; i < _size.Height; i++)
+            {
+                SetCursorPosition(0, i);
+                Console.Write(s);
+            }
+
+            saved.Set();
         }
     }
 }

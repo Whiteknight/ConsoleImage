@@ -43,6 +43,7 @@
     <Compile Include="Animator.cs" />
     <Compile Include="ColorPixelConverter.cs" />
     <Compile Include="ColorExtensions.cs" />
+    <Compile Include="ColorScheme.cs" />
     <Compile Include="ConsoleColorExtensions.cs" />
     <Compile Include="ConsoleImage.cs" />
     <Compile Include="ConsoleManager.cs" />
