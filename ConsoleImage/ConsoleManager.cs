@@ -4,6 +4,8 @@ using System.Text;
 
 namespace ConsoleImage
 {
+    // TODO: Method to create, return and manage ConsoleRegions
+    // TODO: Ability to render multiple ConsoleRegions at once, even if they overlap (with z-indexing)
     public class ConsoleManager
     {
         public static Size MaxSize
@@ -26,11 +28,8 @@ namespace ConsoleImage
             get { return new Point(0, 0); }
         }
 
-        private readonly ImageSettings _settings;
-
-        public ConsoleManager(ImageSettings settings)
+        public ConsoleManager()
         {
-            _settings = settings;
         }
 
         public ConsoleState SaveConsoleState()

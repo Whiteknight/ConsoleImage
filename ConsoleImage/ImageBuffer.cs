@@ -10,6 +10,7 @@ namespace ConsoleImage
         Size Size { get; }
         ConsolePixel GetPixel(int left, int top);
         IEnumerable<ConsolePixel> GetRow(int top);
+        object GetProperty(string propertyName);
     }
 
     public class ImageBufferRegion : IImageBuffer
@@ -17,6 +18,7 @@ namespace ConsoleImage
         private readonly IImageBuffer _buffer;
         private readonly Point _start;
         private readonly Size _size;
+        private Dictionary<string, object> _propertyOverrides;
 
         public ImageBufferRegion(IImageBuffer buffer, Point start, Size size)
         {
@@ -48,6 +50,24 @@ namespace ConsoleImage
             return _buffer.GetRow(top + _start.Y).Skip(_start.X).Take(_size.Width);
         }
 
+        public object GetProperty(string propertyName)
+        {
+            if (_propertyOverrides != null && _propertyOverrides.ContainsKey(propertyName))
+                return _propertyOverrides[propertyName];
+
+            return _buffer.GetProperty(propertyName);
+        }
+
         #endregion
+
+        public void SetPropertyOverride(string propertyName, object value)
+        {
+            if (_propertyOverrides == null)
+                _propertyOverrides = new Dictionary<string, object>();
+            if (_propertyOverrides.ContainsKey(propertyName))
+                _propertyOverrides[propertyName] = value;
+            else
+                _propertyOverrides.Add(propertyName, value);
+        }
     }
 }

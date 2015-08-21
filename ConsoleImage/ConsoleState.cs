@@ -5,44 +5,49 @@ namespace ConsoleImage
 {
     public class ConsoleState
     {
-        private readonly ConsoleColor m_backgroundColor;
-        private readonly ConsoleColor m_foregroundColor;
-        private readonly int m_cursorLeft;
-        private readonly int m_cursorTop;
-        private readonly Encoding m_outputEncoding;
+        private ConsoleColor _backgroundColor;
+        private ConsoleColor _foregroundColor;
+        private int _cursorLeft;
+        private int _cursorTop;
+        private Encoding _outputEncoding;
+        private bool _cursorVisible;
 
-        private ConsoleState(ConsoleColor backgroundColor, ConsoleColor foregroundColor, int cursorLeft, int cursorTop, Encoding outputEncoding)
+        private ConsoleState()
         {
-            m_backgroundColor = backgroundColor;
-            m_foregroundColor = foregroundColor;
-            m_cursorLeft = cursorLeft;
-            m_cursorTop = cursorTop;
-            m_outputEncoding = outputEncoding;
         }
 
         public static ConsoleState GetState()
         {
-            return new ConsoleState(Console.BackgroundColor, Console.ForegroundColor, Console.CursorLeft, Console.CursorTop, Console.OutputEncoding);
+            ConsoleState state = new ConsoleState();
+            state._backgroundColor = Console.BackgroundColor;
+            state._foregroundColor = Console.ForegroundColor;
+            state._cursorLeft = Console.CursorLeft;
+            state._cursorTop = Console.CursorTop;
+            state._outputEncoding = Console.OutputEncoding;
+            state._cursorVisible = Console.CursorVisible;
+            return state;
         }
 
         public void ResetConsole()
         {
-            Console.BackgroundColor = m_backgroundColor;
-            Console.ForegroundColor = m_foregroundColor;
-            Console.SetCursorPosition(m_cursorLeft, m_cursorTop);
-            Console.OutputEncoding = m_outputEncoding;
+            Console.BackgroundColor = _backgroundColor;
+            Console.ForegroundColor = _foregroundColor;
+            Console.SetCursorPosition(_cursorLeft, _cursorTop);
+            Console.OutputEncoding = _outputEncoding;
+            Console.CursorVisible = _cursorVisible;
         }
 
-        public IDisposable AsDisposable()
+        public IDisposable AsResetOnDispose()
         {
-            return new DisposableConsoleState(this);
+            return new ResetOnDisposedConsoleState(this);
         }
 
-        private class DisposableConsoleState : IDisposable
+        private class ResetOnDisposedConsoleState : IDisposable
         {
             private readonly ConsoleState _state;
+            private bool _disposed;
 
-            public DisposableConsoleState(ConsoleState state)
+            public ResetOnDisposedConsoleState(ConsoleState state)
             {
                 _state = state;
             }
@@ -51,7 +56,11 @@ namespace ConsoleImage
 
             public void Dispose()
             {
+                if (_disposed)
+                    return;
+
                 _state.ResetConsole();
+                _disposed = true;
             }
 
             #endregion

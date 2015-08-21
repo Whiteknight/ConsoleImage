@@ -14,10 +14,11 @@ namespace ConsoleImage.Viewer
             ImageSettings settings = new ImageSettings {
                 //ImageLeft = 50,
                 //ImageTop = 60,
-                //ImageMaxSize = new Size {
-                //    Height = 50,
-                //    Width = 50
-                //},
+                ImageMaxSize = new Size
+                {
+                    Height = 30,
+                    Width = 30
+                },
 
                 //ImageCropStart = new Point {
                 //    X = 10,
@@ -43,28 +44,7 @@ namespace ConsoleImage.Viewer
 
             Bitmap bitmap = (Bitmap)System.Drawing.Image.FromFile(args[0]);
 
-            //ConsoleImage.DrawAnimate(original, () => Console.KeyAvailable, settings);
-
-            settings.Validate();
-
-            ConsoleManager manager = new ConsoleManager(settings);
-            using (IDisposable state = manager.SaveConsoleState().AsDisposable())
-            {
-                manager.SetForGraphics();
-                //manager.ResizeConsoleWindow(image.Size);
-
-                ImageBuilder builder = new ImageBuilder(settings.Sampler, settings.Converter, settings.TransparencyColor.ToColor());
-                IImage image = builder.Build(bitmap, ConsoleManager.MaxSize);
-                if (settings.ImageCropStart.HasValue || settings.ImageCropSize.HasValue)
-                    image = new ImageRegion(image, settings.ImageCropStart, settings.ImageCropSize);
-
-
-                ConsoleRegion region = new ConsoleRegion(ConsoleManager.Origin, new Size(36, 36), new ProgressiveRenderStrategy());
-                region.Draw(image.GetBuffer(0));
-
-                Console.ReadKey();
-                region.MoveTo(new Point(36, 36));
-            }
+            ConsoleImage.DrawAnimate(bitmap, () => Console.KeyAvailable, settings);
 
             Console.ReadKey();
         }

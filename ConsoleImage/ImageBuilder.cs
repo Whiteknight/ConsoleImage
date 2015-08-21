@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 
 namespace ConsoleImage
 {
@@ -96,18 +97,50 @@ namespace ConsoleImage
                     }
                 }
 
-                return new ImageBuffer(size, buffer);
+                Dictionary<string, object> properties = null;
+
+                // TODO: Move PropertyItem parsing out into separate classes? Do existing libraries exist that might
+                // do this for us?
+                // TODO: Are there any other per-frame properties we want?
+                PropertyItem gifFrameTimeProp = bmp.PropertyItems.FirstOrDefault(pi => pi.Id == 0x5100);
+                if (gifFrameTimeProp != null)
+                {
+                    byte[] b = gifFrameTimeProp.Value;
+                    long value = b[idx * 4] | (b[(idx * 4) + 1] << 8) | (b[(idx * 4) + 2] << 16) | (b[(idx * 4) + 3] << 24);
+                    value = value * 10; // gif frame times are in centi-seconds, not milli-seconds
+                    properties = new Dictionary<string, object>();
+                    properties.Add(ImagePropertyConstants.GifFrameTimeMs, value);
+                }
+
+                return new ImageBuffer(size, buffer, properties);
             }
         }
+
+        //private static Dictionary<int, string> framePropertiesToFetch = new Dictionary<int, string> {
+        //    { 0x5100, ImagePropertyConstants.GifFrameTimeMs }
+        //};
+
+        //private Dictionary<string, object> GetFrameProperties(Bitmap bmp)
+        //{
+        //    IList<PropertyItem> items = bmp.PropertyItems.Where(pi => framePropertiesToFetch.ContainsKey(pi.Id)).ToList();
+        //    if (!items.Any())
+        //        return null;
+
+
+        //}
+
+        //private long Parse
 
         private class ImageBuffer : IImageBuffer
         {
             private readonly ConsolePixel[,] _buffer;
+            private readonly IReadOnlyDictionary<string, object> _properties;
             public Size Size { get; private set; }
 
-            public ImageBuffer(Size size, ConsolePixel[,] buffer)
+            public ImageBuffer(Size size, ConsolePixel[,] buffer, IReadOnlyDictionary<string, object> properties)
             {
                 _buffer = buffer;
+                _properties = properties;
                 Size = size;
             }
 
@@ -124,6 +157,15 @@ namespace ConsoleImage
             {
                 for (int i = 0; i < Size.Width; i++)
                     yield return _buffer[top, i];
+            }
+
+            public object GetProperty(string propertyName)
+            {
+                if (_properties == null)
+                    return null;
+                if (!_properties.ContainsKey(propertyName))
+                    return null;
+                return _properties[propertyName];
             }
         }
     }

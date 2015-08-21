@@ -8,6 +8,8 @@ using System.Linq;
 namespace ConsoleImage
 {
     // TODO: create a subclass that represents a projection of a cropped region in an image.
+    // TODO: Define IImage in terms of a more generic type for holding any set of chars or
+    // ConsolePixels, for use with more than just graphics
     public interface IImage
     {
         Size Size { get; }

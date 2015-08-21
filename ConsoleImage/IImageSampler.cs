@@ -9,6 +9,8 @@ namespace ConsoleImage
 
     public class AveragingImageSampler : IImageSampler
     {
+        // TODO: The "pixels" in the console aren't usually square. Create a sampler that accounts for a 
+        // rectangular pixel
         public Color GetSampleColor(Size bufferSize, Bitmap bmp, int left, int top, Color bgColor)
         {
             double x = ((double)bmp.Size.Width / bufferSize.Width) * left;

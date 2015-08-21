@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Animator.cs" />
     <Compile Include="ColorPixelConverter.cs" />
     <Compile Include="ColorExtensions.cs" />
     <Compile Include="ConsoleColorExtensions.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="Image.cs" />
     <Compile Include="ImageBuffer.cs" />
     <Compile Include="ImageBuilder.cs" />
+    <Compile Include="ImagePropertyConstants.cs" />
     <Compile Include="ImageRegion.cs" />
     <Compile Include="ImageRenderer.cs" />
     <Compile Include="ImageSettings.cs" />

@@ -52,8 +52,8 @@ namespace ConsoleImage.SlidingPuzzle
 
             Size gameSize = new Size(BlockSize * 4, BlockSize * 4);
 
-            ConsoleManager manager = new ConsoleManager(settings);
-            using (IDisposable state = manager.SaveConsoleState().AsDisposable())
+            ConsoleManager manager = new ConsoleManager();
+            using (IDisposable state = manager.SaveConsoleState().AsResetOnDispose())
             {
                 manager.SetForGraphics();
                 manager.ResizeConsoleWindow(gameSize);
